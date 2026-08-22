@@ -312,7 +312,8 @@ function EmptyState() {
         No comparable sales available
       </p>
       <p className="text-xs text-slate-400 dark:text-slate-500 max-w-xs">
-        Trigger a sync to refresh ATTOM area-sales data for this ZIP code.
+        County Ascent records do not include area comps. Market comps are
+        unavailable for this property.
       </p>
     </div>
   );

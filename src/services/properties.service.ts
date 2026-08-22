@@ -2,6 +2,26 @@ import { axiosInstance } from "../lib/axios";
 
 export type EnrichmentStatus = "SUCCESS" | "PENDING" | "FAILED";
 
+export interface ParcelTaxYearSummary {
+  taxYear: number;
+  taxBill: number | null;
+  taxesDue: number | null;
+  taxesPaid: number | null;
+  totalPayoff?: number | null;
+}
+
+export interface PropertyParcelSummary {
+  ownerName: string | null;
+  acres: number | null;
+  taxDistrict: string | null;
+  schoolDistrict?: string | null;
+  mailingStreet?: string | null;
+  mailingCity?: string | null;
+  mailingState?: string | null;
+  mailingZip?: string | null;
+  taxHistory: ParcelTaxYearSummary[];
+}
+
 export interface PropertyListItem {
   id: string;
   leadId: string;
@@ -13,11 +33,15 @@ export interface PropertyListItem {
   longitude: number | null;
   bedrooms: number | null;
   bathrooms: number | null;
+  lotSizeAcres?: number | null;
   enrichment: {
     status: EnrichmentStatus;
     estimatedValue: number | null;
     taxAssessedValue: number | null;
+    taxAssessedYear?: number | null;
+    ownerType?: string | null;
   } | null;
+  parcel?: PropertyParcelSummary | null;
 }
 
 export interface PropertyComparable {
@@ -43,6 +67,7 @@ export interface PropertyDetail {
   bathrooms: number | null;
   squareFeet: number | null;
   yearBuilt: number | null;
+  lotSizeAcres?: number | null;
   images: { id: string; url: string; position: number }[];
   enrichment: {
     status: EnrichmentStatus;
@@ -57,6 +82,7 @@ export interface PropertyDetail {
     lastSyncedAt: string | null;
     comparables: PropertyComparable[];
   } | null;
+  parcel?: PropertyParcelSummary | null;
   lead: {
     id: string;
     sequence: number;
@@ -105,7 +131,15 @@ export const propertiesService = {
 
 export function formatMoney(value: number | null | undefined): string {
   if (value == null) return "—";
-  return `$${value.toLocaleString()}`;
+  return `$${value.toLocaleString(undefined, { maximumFractionDigits: 0 })}`;
+}
+
+export function formatMoneyExact(value: number | null | undefined): string {
+  if (value == null) return "—";
+  return `$${value.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
 }
 
 export function formatEnumLabel(value: string | null | undefined): string {
@@ -123,4 +157,10 @@ export function enrichmentLabel(
   if (status === "SUCCESS") return "Enriched";
   if (status === "FAILED") return "Failed";
   return "Pending";
+}
+
+export function latestTaxBill(
+  parcel: PropertyParcelSummary | null | undefined,
+): ParcelTaxYearSummary | null {
+  return parcel?.taxHistory?.[0] ?? null;
 }

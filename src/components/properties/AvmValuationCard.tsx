@@ -1,89 +1,101 @@
 "use client";
 
 import React from "react";
-import { TrendingUp } from "lucide-react";
+import { Building2 } from "lucide-react";
 
-export interface AvmMetrics {
+export interface CountyTaxMetrics {
+  taxBill: string;
+  taxesDue: string;
+  taxesPaid: string;
   estimatedValue: string;
-  taxAssessed: string;
   lastSoldPrice: string;
   lastSoldDate: string;
-  confidenceScore: number;
 }
 
-export interface AvmValuationCardProps {
-  avm: AvmMetrics;
+export interface CountyTaxCardProps {
+  metrics: CountyTaxMetrics;
   taxYear?: number | null;
+  taxDistrict?: string | null;
+  acres?: number | null;
 }
 
-export const AvmValuationCard: React.FC<AvmValuationCardProps> = ({
-  avm,
-  taxYear = 2025,
+export const AvmValuationCard: React.FC<CountyTaxCardProps> = ({
+  metrics,
+  taxYear = null,
+  taxDistrict = null,
+  acres = null,
 }) => {
   return (
     <div className="p-6 md:p-7 bg-[#0e1726] dark:bg-[#0b1329] text-white rounded-[22px] border border-slate-800 shadow-md space-y-6">
-      {/* Header */}
       <div className="flex items-center gap-2.5 text-slate-300">
-        <TrendingUp className="w-5 h-5 text-slate-300" />
+        <Building2 className="w-5 h-5 text-slate-300" />
         <h3 className="text-sm font-semibold tracking-wide text-slate-200">
-          Automated Valuation Model (AVM)
+          County Tax Record
         </h3>
       </div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        {/* Left Breakdown (7 cols) */}
+      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
         <div className="md:col-span-7 space-y-5">
           <div>
             <span className="text-xs font-medium text-slate-400 block">
-              Estimated Value
+              Tax Bill{taxYear ? ` (${taxYear})` : ""}
             </span>
             <h2 className="text-3xl md:text-4xl font-extrabold text-white tracking-tight mt-1">
-              {avm.estimatedValue}
+              {metrics.taxBill}
             </h2>
           </div>
 
           <div className="space-y-2.5 text-xs pt-1">
             <div className="flex items-center justify-between">
+              <span className="font-normal text-slate-400">Taxes Due</span>
+              <span className="font-bold text-white">{metrics.taxesDue}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="font-normal text-slate-400">Taxes Paid</span>
+              <span className="font-bold text-white">{metrics.taxesPaid}</span>
+            </div>
+            <div className="flex items-center justify-between">
               <span className="font-normal text-slate-400">
-                Tax Assessed{taxYear ? ` (${taxYear})` : ""}
+                Market Value (AVM)
               </span>
-              <span className="font-bold text-white">{avm.taxAssessed}</span>
+              <span className="font-bold text-white">
+                {metrics.estimatedValue}
+              </span>
             </div>
-
             <div className="flex items-center justify-between">
-              <span className="font-normal text-slate-400">Last Sold Price</span>
-              <span className="font-bold text-white">{avm.lastSoldPrice}</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="font-normal text-slate-400">Last Sold Date</span>
-              <span className="font-bold text-white">{avm.lastSoldDate}</span>
+              <span className="font-normal text-slate-400">Last Sold</span>
+              <span className="font-bold text-white">
+                {metrics.lastSoldPrice}
+                {metrics.lastSoldDate !== "—"
+                  ? ` · ${metrics.lastSoldDate}`
+                  : ""}
+              </span>
             </div>
           </div>
         </div>
 
-        {/* Right Confidence Score Inset Card (5 cols) */}
-        <div className="md:col-span-5 p-5 bg-[#182338] dark:bg-[#080d1e] rounded-2xl border border-white/10 flex flex-col justify-between space-y-4">
+        <div className="md:col-span-5 p-5 bg-[#182338] dark:bg-[#080d1e] rounded-2xl border border-white/10 flex flex-col gap-4">
           <div>
             <span className="text-xs font-medium text-slate-300 block">
-              Confidence Score
+              Tax District
             </span>
-            <div className="flex items-baseline gap-1.5 mt-2">
-              <span className="text-3xl md:text-4xl font-extrabold text-[#10b981]">
-                {avm.confidenceScore}
-              </span>
-              <span className="text-sm font-normal text-slate-400">/ 100</span>
-            </div>
+            <p className="text-sm font-bold text-white mt-2 leading-snug">
+              {taxDistrict?.trim() || "—"}
+            </p>
           </div>
-
-          {/* Progress Bar */}
-          <div className="w-full h-2.5 bg-[#0f172a] rounded-full overflow-hidden">
-            <div
-              className="h-full rounded-full bg-[#10b981] transition-all duration-500"
-              style={{ width: `${avm.confidenceScore}%` }}
-            />
+          <div>
+            <span className="text-xs font-medium text-slate-300 block">
+              Lot Size
+            </span>
+            <p className="text-sm font-bold text-white mt-2">
+              {acres != null && Number.isFinite(acres)
+                ? `${acres.toFixed(2)} acres`
+                : "—"}
+            </p>
           </div>
+          <p className="text-[10px] text-slate-500 leading-relaxed">
+            AVM / comps are not provided by county Ascent records.
+          </p>
         </div>
       </div>
     </div>

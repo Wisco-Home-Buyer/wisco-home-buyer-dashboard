@@ -14,6 +14,8 @@ import {
   enrichmentLabel,
   formatEnumLabel,
   formatMoney,
+  formatMoneyExact,
+  latestTaxBill,
 } from "@/services/properties.service";
 import { ArrowLeft, Layers, Loader2, AlertCircle, Clock } from "lucide-react";
 
@@ -28,6 +30,8 @@ export default function PropertyDetailPage() {
     ? `${data.city}, ${data.state} ${data.zip}`
     : "";
   const enrichment = data?.enrichment;
+  const parcel = data?.parcel;
+  const tax = latestTaxBill(parcel);
   const label = enrichmentLabel(enrichment?.status);
   const BadgeIcon =
     label === "Enriched" ? Layers : label === "Failed" ? AlertCircle : Clock;
@@ -38,12 +42,12 @@ export default function PropertyDetailPage() {
         ? "bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300"
         : "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300";
 
-  const avm = {
+  const countyMetrics = {
+    taxBill: formatMoneyExact(tax?.taxBill),
+    taxesDue: formatMoneyExact(tax?.taxesDue),
+    taxesPaid: formatMoneyExact(tax?.taxesPaid),
     estimatedValue: enrichment?.estimatedValue
       ? formatMoney(enrichment.estimatedValue)
-      : "—",
-    taxAssessed: enrichment?.taxAssessedValue
-      ? formatMoney(enrichment.taxAssessedValue)
       : "—",
     lastSoldPrice: enrichment?.lastSoldPrice
       ? formatMoney(enrichment.lastSoldPrice)
@@ -51,12 +55,10 @@ export default function PropertyDetailPage() {
     lastSoldDate: enrichment?.lastSoldDate
       ? format(new Date(enrichment.lastSoldDate), "MMM yyyy")
       : "—",
-    confidenceScore: enrichment?.confidenceScore ?? 0,
-    taxYear: enrichment?.taxAssessedYear ?? null,
   };
 
   const ownership = {
-    ownerName: data?.lead?.sellerName ?? "—",
+    ownerName: parcel?.ownerName?.trim() || data?.lead?.sellerName || "—",
     ownerType: enrichment?.ownerType
       ? formatEnumLabel(enrichment.ownerType)
       : "—",
@@ -89,7 +91,7 @@ export default function PropertyDetailPage() {
           onMobileMenuToggle={() => setMobileSidebarOpen(!mobileSidebarOpen)}
           breadcrumbs={[
             { label: "Wisco Home Buyer", href: "/" },
-            { label: "Properties & ATTOM Data", href: "/properties" },
+            { label: "Properties", href: "/properties" },
             { label: address },
           ]}
         />
@@ -115,7 +117,6 @@ export default function PropertyDetailPage() {
             </div>
           ) : (
             <>
-              {/* Header Title Bar */}
               <div className="flex items-start sm:items-center gap-3">
                 <Link
                   href="/properties"
@@ -134,7 +135,7 @@ export default function PropertyDetailPage() {
                       className={`inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] sm:text-[11px] font-extrabold rounded-full shrink-0 ${badgeClass}`}
                     >
                       <BadgeIcon className="w-3 h-3" />
-                      {label === "Enriched" ? "ATTOM Verified" : label}
+                      {label === "Enriched" ? "County Verified" : label}
                     </span>
                   </div>
                   <p className="text-xs font-normal text-slate-400 dark:text-slate-500 mt-0.5">
@@ -143,20 +144,16 @@ export default function PropertyDetailPage() {
                 </div>
               </div>
 
-              {/* Main Content Grid */}
               <div className="space-y-6">
-                {/* Top Row: AVM (8 cols) & Ownership (4 cols) */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                   <div className="lg:col-span-8">
                     <AvmValuationCard
-                      avm={{
-                        estimatedValue: avm.estimatedValue,
-                        taxAssessed: avm.taxAssessed,
-                        lastSoldPrice: avm.lastSoldPrice,
-                        lastSoldDate: avm.lastSoldDate,
-                        confidenceScore: avm.confidenceScore,
-                      }}
-                      taxYear={avm.taxYear}
+                      metrics={countyMetrics}
+                      taxYear={
+                        tax?.taxYear ?? enrichment?.taxAssessedYear ?? null
+                      }
+                      taxDistrict={parcel?.taxDistrict ?? null}
+                      acres={parcel?.acres ?? data.lotSizeAcres ?? null}
                     />
                   </div>
 
@@ -165,7 +162,6 @@ export default function PropertyDetailPage() {
                   </div>
                 </div>
 
-                {/* Bottom Row: Recent Comparables (Full Width 12 cols) */}
                 <div>
                   <RecentComparablesCard
                     comparables={comparables}

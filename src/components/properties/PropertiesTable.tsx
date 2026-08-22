@@ -15,7 +15,8 @@ import {
 import { useProperties } from "../../hooks/usePropertiesQuery";
 import {
   enrichmentLabel,
-  formatMoney,
+  formatMoneyExact,
+  latestTaxBill,
 } from "../../services/properties.service";
 
 const PropertiesMap = dynamic(() => import("./PropertiesMap"), {
@@ -67,10 +68,10 @@ export const PropertiesTable: React.FC = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          Properties & ATTOM Data
+          Properties
         </h1>
         <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-1">
-          View property details and enriched market data.
+          View property details and county public-record enrichment.
         </p>
       </div>
 
@@ -125,8 +126,8 @@ export const PropertiesTable: React.FC = () => {
                   <tr className="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                     <th className="pb-3 px-3">ADDRESS</th>
                     <th className="pb-3 px-3">SPECS</th>
-                    <th className="pb-3 px-3">EST. VALUE (AVM)</th>
-                    <th className="pb-3 px-3">TAX ASSESSED</th>
+                    <th className="pb-3 px-3">TAX BILL</th>
+                    <th className="pb-3 px-3">OWNER</th>
                     <th className="pb-3 px-3">ENRICHMENT</th>
                     <th className="pb-3 px-3 text-right">ACTIONS</th>
                   </tr>
@@ -168,18 +169,22 @@ export const PropertiesTable: React.FC = () => {
                           <td className="py-4 px-3 font-bold text-slate-800 dark:text-slate-200">
                             {item.bedrooms != null
                               ? `${item.bedrooms} bd`
-                              : "—"}
+                              : item.parcel?.acres != null
+                                ? `${item.parcel.acres.toFixed(2)} ac`
+                                : "—"}
                             {item.bathrooms != null
                               ? ` / ${item.bathrooms} ba`
                               : ""}
                           </td>
 
                           <td className="py-4 px-3 font-extrabold text-slate-900 dark:text-white">
-                            {formatMoney(item.enrichment?.estimatedValue)}
+                            {formatMoneyExact(
+                              latestTaxBill(item.parcel)?.taxBill ?? null,
+                            )}
                           </td>
 
-                          <td className="py-4 px-3 font-semibold text-slate-600 dark:text-slate-300">
-                            {formatMoney(item.enrichment?.taxAssessedValue)}
+                          <td className="py-4 px-3 font-semibold text-slate-600 dark:text-slate-300 max-w-[160px] truncate">
+                            {item.parcel?.ownerName?.trim() || "—"}
                           </td>
 
                           <td className="py-4 px-3">

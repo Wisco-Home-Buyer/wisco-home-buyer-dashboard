@@ -23,7 +23,7 @@ export default function PropertiesPage() {
           onMobileMenuToggle={() => setMobileSidebarOpen(!mobileSidebarOpen)}
           breadcrumbs={[
             { label: "Wisco Home Buyer", href: "/" },
-            { label: "Properties & ATTOM Data" },
+            { label: "Properties" },
           ]}
         />
 
