@@ -70,9 +70,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
       badge: null,
     },
     {
-      name: "ATTOM Data",
+      name: "Public Records",
       icon: FaLayerGroup,
-      href: "/attom-data",
+      href: "/ascent-data",
       badge: null,
     },
     {
