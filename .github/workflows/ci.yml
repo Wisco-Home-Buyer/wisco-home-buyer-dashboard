@@ -17,7 +17,7 @@ permissions:
 env:
   NODE_VERSION: "22"
   DOCKERHUB_IMAGE: softvence/wisco-home-buyer-dashboard
-  NEXT_PUBLIC_API_URL: http://2.24.127.98
+  NEXT_PUBLIC_API_URL: https://api.wiscohomebuyer.com
 
 jobs:
   build:
