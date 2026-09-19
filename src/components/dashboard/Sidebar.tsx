@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import {
   FaChartPie,
   FaUsers,
+  FaUserFriends,
   FaBuilding,
   FaLayerGroup,
   FaChartLine,
@@ -62,6 +63,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
             ? "99+"
             : String(newLeadsCount)
           : null,
+    },
+    {
+      name: "Buyers List",
+      icon: FaUserFriends,
+      href: "/buyers",
+      badge: null,
     },
     {
       name: "Properties",
