@@ -27,9 +27,16 @@ export function useInviteUserMutation() {
 
   return useMutation({
     mutationFn: (payload: InviteUserPayload) => usersService.inviteUser(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       void queryClient.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
-      toast.success("Invite sent successfully");
+      if (data?.emailSent === false && data.inviteUrl) {
+        toast.warning("Email not configured — share this invite link", {
+          description: data.inviteUrl,
+          duration: 15000,
+        });
+      } else {
+        toast.success("Invite sent successfully");
+      }
     },
     onError: (err: { response?: { data?: { message?: string } }; message?: string }) => {
       toast.error(

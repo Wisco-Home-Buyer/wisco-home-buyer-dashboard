@@ -28,6 +28,17 @@ export const authService = {
     return data;
   },
 
+  async acceptInvite(payload: {
+    token: string;
+    password: string;
+  }): Promise<ApiResponse<AuthResponseData>> {
+    const { data } = await axiosInstance.post<ApiResponse<AuthResponseData>>(
+      "/api/auth/accept-invite",
+      payload
+    );
+    return data;
+  },
+
   async getProfile(): Promise<ApiResponse<UserProfile>> {
     const { data } = await axiosInstance.get<ApiResponse<UserProfile>>(
       "/api/auth/me"
