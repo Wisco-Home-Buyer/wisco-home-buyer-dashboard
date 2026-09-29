@@ -236,7 +236,7 @@ export const Header: React.FC<HeaderProps> = ({
                       ? String((user.role as { name?: string }).name).replace("_", " ")
                       : user?.role
                       ? String(user.role)
-                      : "Super Admin"}
+                      : "—"}
                   </span>
                 </div>
               </div>

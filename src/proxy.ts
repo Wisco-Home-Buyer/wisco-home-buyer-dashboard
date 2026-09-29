@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-const publicAuthRoutes = ["/login"];
+const publicAuthRoutes = ["/login", "/accept-invite"];
 
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;

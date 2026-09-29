@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Eye, ShieldCheck, Building2 } from "lucide-react";
+import { Mail, Eye, ShieldCheck } from "lucide-react";
 const LockIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     viewBox="0 0 24 24"
@@ -72,14 +72,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Matches seeded demo credentials in `tygry8-server`.
-  const DEMO_PASSWORD = "ChangeMe123!";
-  const DEMO_USERS = [
-    { label: "Super Admin", email: "naim@wiscohomebuyer.com" },
-    { label: "Admin", email: "priya@wiscohomebuyer.com" },
-    { label: "Analyst", email: "marcus@wiscohomebuyer.com" },
-  ] as const;
-
   useEffect(() => {
     if (isAuthenticated) {
       router.replace("/");
@@ -97,12 +89,6 @@ export default function LoginPage() {
     if (!res.success) {
       setErrorMessage(res.message || "Invalid credentials. Please try again.");
     }
-  };
-
-  const handleDemoLogin = (demoEmail: string) => {
-    setEmail(demoEmail);
-    setPassword(DEMO_PASSWORD);
-    setErrorMessage("");
   };
 
   return (
@@ -228,26 +214,6 @@ export default function LoginPage() {
                       <Eye className="w-4 h-4" />
                     )}
                   </button>
-                </div>
-              </div>
-
-              {/* Demo Login Buttons — one per seeded role */}
-              <div className="pt-1 space-y-2">
-                <p className="text-[11px] font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-wider text-center">
-                  Quick demo login
-                </p>
-                <div className="grid grid-cols-3 gap-2">
-                  {DEMO_USERS.map((user) => (
-                    <button
-                      key={user.email}
-                      type="button"
-                      onClick={() => handleDemoLogin(user.email)}
-                      disabled={isLoading}
-                      className="py-2.5 px-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800/70 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold text-[11px] sm:text-xs transition-all duration-200 cursor-pointer disabled:opacity-70"
-                    >
-                      {user.label}
-                    </button>
-                  ))}
                 </div>
               </div>
 

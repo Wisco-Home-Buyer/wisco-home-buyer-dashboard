@@ -21,7 +21,9 @@ export interface InviteUserPayload {
 
 export interface InviteUserResult {
   user: TeamUser;
-  inviteToken: string;
+  /** False when SMTP isn't configured — `inviteUrl` is then present. */
+  emailSent: boolean;
+  inviteUrl?: string;
 }
 
 async function unwrap<T>(promise: Promise<{ data: unknown }>): Promise<T> {

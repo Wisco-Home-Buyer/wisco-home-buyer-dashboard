@@ -52,7 +52,8 @@ axiosInstance.interceptors.response.use(
       originalRequest &&
       !originalRequest._retry &&
       !originalRequest.url?.includes("/api/auth/login") &&
-      !originalRequest.url?.includes("/api/auth/refresh")
+      !originalRequest.url?.includes("/api/auth/refresh") &&
+      !originalRequest.url?.includes("/api/auth/accept-invite")
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
