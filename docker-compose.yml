@@ -1,0 +1,17 @@
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # Baked into the Next.js bundle at build time; set it in Dokploy's
+        # Environment tab (falls back to the production API).
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.wiscohomebuyer.com}
+    container_name: wisco-home-buyer-dashboard
+    restart: unless-stopped
+    networks:
+      - dokploy-network
+
+networks:
+  dokploy-network:
+    external: true
