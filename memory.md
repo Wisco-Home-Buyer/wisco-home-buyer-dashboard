@@ -1,0 +1,23 @@
+# Wisco Home Buyer — Dashboard (internal CRM)
+
+## Project concept
+Admin/CRM dashboard for the Wisco Home Buyer team to manage seller leads, buyers list, property data and users. Talks to `wisco-home-buyer-server`. Parent folder has `PROJECT_OVERVIEW.md`.
+
+## Tech stack and architecture
+Next.js, TypeScript, Tailwind + shadcn/Radix, TanStack Query/Table, Zustand (auth), axios, react-hook-form + zod, Recharts, Leaflet, socket.io-client, framer-motion.
+- Data flow: `src/services/*.service.ts` (axios) -> `src/hooks/use*Query.ts` (TanStack Query).
+- Auth: `src/proxy.ts` redirects to `/login` when `accessToken`/`refreshToken` cookies are missing.
+- Pages: `/` overview, `/leads` (+`[id]`), `/buyers`, `/properties` (+`[id]`), `/ascent-data`, `/attom-data`, `/analytics`, `/settings`; auth pages `/login`, `/accept-invite`, `/forgot-password`, `/reset-password`.
+
+## Current state
+Feature complete for current scope; no TODO/mock leftovers found in `src`.
+
+## Key decisions
+- Ascent (county records) is the source of truth for ownership/tax; ATTOM auto-pull is disabled. ATTOM runs a mock without an API key, so do not demo its values as real.
+- Roles: SUPER_ADMIN > ADMIN > ANALYST > VIEWER.
+
+## Setup and run
+`npm install`, `npm run dev` (port 3001 to match server CORS). Uses `NEXT_PUBLIC_API_URL`.
+
+## Last updated
+2026-10-14 — memory.md created.
