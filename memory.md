@@ -52,3 +52,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Listing video upload (branch feat/listing-video-upload, 2026-10-16)
 - Listing form: video is uploaded (MP4/MOV/WEBM, up to 200 MB, with progress) to `POST /api/uploads/listing-video`; the YouTube link field is gone (old external links still show and can be removed). Detail page plays the video. `lib/video.ts` tells an uploaded file from an external link. Needs the server video endpoint deployed first.
+
+## Stored backups card (branch feat/stored-backups-ui, 2026-10-16)
+- Settings > Database shows 'Automatic backups': the nightly backups kept on the server (download each) and 'Back up now'. Needs the server `/api/backup/scheduled` endpoints deployed.
