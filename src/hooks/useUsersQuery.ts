@@ -47,9 +47,12 @@ export function useInviteUserMutation() {
 }
 
 export function useResendInviteMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (id: string) => usersService.resendInvite(id),
     onSuccess: (data) => {
+      void queryClient.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
       if (data?.emailSent === false && data.inviteUrl) {
         toast.warning("Email not configured — share this invite link", {
           description: data.inviteUrl,

@@ -3,6 +3,9 @@ import { axiosInstance } from "../lib/axios";
 export type ApiRole = "SUPER_ADMIN" | "ADMIN" | "ANALYST" | "VIEWER";
 export type ApiUserStatus = "ACTIVE" | "INVITED" | "SUSPENDED";
 
+/** Must match INVITE_RESEND_COOLDOWN_SECONDS on the server; the server enforces it. */
+export const INVITE_RESEND_COOLDOWN_SECONDS = 120;
+
 export interface TeamUser {
   id: string;
   email: string;
@@ -10,6 +13,8 @@ export interface TeamUser {
   role: ApiRole;
   status: ApiUserStatus;
   avatarUrl: string | null;
+  /** When an invite email last went out (null if never). */
+  inviteSentAt: string | null;
   createdAt: string;
 }
 

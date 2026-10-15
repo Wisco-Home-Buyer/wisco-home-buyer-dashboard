@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { UserPlus, ChevronDown, X, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import {
@@ -14,6 +14,7 @@ import {
 import {
   ApiRole,
   initialsFromName,
+  INVITE_RESEND_COOLDOWN_SECONDS,
   INVITE_ROLE_OPTIONS,
   ROLE_LABELS,
   statusLabel,
@@ -32,6 +33,10 @@ export const UsersRolesTab: React.FC = () => {
   const inviteMutation = useInviteUserMutation();
   const resendInviteMutation = useResendInviteMutation();
   const [resendingId, setResendingId] = useState<string | null>(null);
+  // Times we sent an invite from this page, so the button locks at once
+  // instead of waiting for the list to refresh.
+  const [sentHere, setSentHere] = useState<Record<string, number>>({});
+  const [now, setNow] = useState(() => Date.now());
   const updateRoleMutation = useUpdateUserRoleMutation();
   const updateStatusMutation = useUpdateUserStatusMutation();
   const removeMutation = useRemoveUserMutation();
@@ -49,6 +54,31 @@ export const UsersRolesTab: React.FC = () => {
   const [activeOpenDropdown, setActiveOpenDropdown] = useState<string | null>(
     null,
   );
+
+  const secondsUntilResend = (member: {
+    id: string;
+    inviteSentAt: string | null;
+  }) => {
+    const serverSent = member.inviteSentAt
+      ? new Date(member.inviteSentAt).getTime()
+      : 0;
+    const sentAt = Math.max(serverSent, sentHere[member.id] ?? 0);
+    if (!sentAt) return 0;
+    return Math.max(
+      0,
+      Math.ceil(INVITE_RESEND_COOLDOWN_SECONDS - (now - sentAt) / 1000),
+    );
+  };
+
+  const anyCoolingDown = members.some(
+    (member) => member.status === "INVITED" && secondsUntilResend(member) > 0,
+  );
+
+  useEffect(() => {
+    if (!anyCoolingDown) return;
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [anyCoolingDown]);
 
   const handleRoleChange = (id: string, newRole: ApiRole) => {
     if (!canManage) return;
@@ -358,10 +388,22 @@ export const UsersRolesTab: React.FC = () => {
                     {member.status === "INVITED" && (
                       <button
                         type="button"
-                        disabled={resendingId === member.id}
+                        disabled={
+                          resendingId === member.id ||
+                          secondsUntilResend(member) > 0
+                        }
                         onClick={() => {
                           setResendingId(member.id);
                           resendInviteMutation.mutate(member.id, {
+                            onSuccess: (data) => {
+                              if (data?.emailSent) {
+                                setNow(Date.now());
+                                setSentHere((current) => ({
+                                  ...current,
+                                  [member.id]: Date.now(),
+                                }));
+                              }
+                            },
                             onSettled: () => setResendingId(null),
                           });
                         }}
@@ -369,7 +411,9 @@ export const UsersRolesTab: React.FC = () => {
                       >
                         {resendingId === member.id
                           ? "Sending..."
-                          : "Resend invite"}
+                          : secondsUntilResend(member) > 0
+                            ? `Resend in ${Math.floor(secondsUntilResend(member) / 60)}:${String(secondsUntilResend(member) % 60).padStart(2, "0")}`
+                            : "Resend invite"}
                       </button>
                     )}
                     {member.status !== "INVITED" && (
