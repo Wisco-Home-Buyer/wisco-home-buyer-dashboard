@@ -10,35 +10,10 @@ interface PriorityAlertsProps {
   isLoading?: boolean;
 }
 
-const DEFAULT_ALERTS: OverviewAlert[] = [
-  {
-    id: "alert-1",
-    type: "INSPECTION_ISSUE",
-    title: "Inspection Issue",
-    message: "889 Oak Ln, Milwaukee - Roof repair needed before closing.",
-    priority: "HIGH",
-    leadId: null,
-    isRead: false,
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "alert-2",
-    type: "INSPECTION_ISSUE",
-    title: "Inspection Issue",
-    message: "889 Oak Ln, Milwaukee - Roof repair needed before closing.",
-    priority: "HIGH",
-    leadId: null,
-    isRead: false,
-    createdAt: new Date().toISOString(),
-  },
-];
-
 export const PriorityAlerts: React.FC<PriorityAlertsProps> = ({
   alerts = [],
   isLoading = false,
 }) => {
-  const displayAlerts = alerts.length > 0 ? alerts : DEFAULT_ALERTS;
-
   return (
     <div className="flex flex-col justify-between p-4 md:p-5 bg-white dark:bg-slate-900 rounded-[22px] border border-slate-100/80 dark:border-slate-800/80 shadow-xs hover:shadow-md transition-all duration-200 h-full">
       <div>
@@ -60,9 +35,13 @@ export const PriorityAlerts: React.FC<PriorityAlertsProps> = ({
               />
             ))}
           </div>
+        ) : alerts.length === 0 ? (
+          <p className="py-6 text-center text-xs font-medium text-[#64748b] dark:text-slate-400">
+            No alerts right now.
+          </p>
         ) : (
           <div className="space-y-2.5">
-            {displayAlerts.map((alert) => {
+            {alerts.map((alert) => {
               const body = (
                 <div className="px-3.5 py-3 md:px-4 md:py-3.5 rounded-xl bg-[#fffbf5] dark:bg-amber-950/20 border border-[#feeecd] dark:border-amber-900/30 transition-all hover:bg-[#fff7ec] dark:hover:bg-amber-950/30 cursor-pointer">
                   <div className="flex items-start gap-2.5">
