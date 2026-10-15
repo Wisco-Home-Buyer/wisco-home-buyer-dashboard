@@ -4,7 +4,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import { ArrowLeft, RefreshCw, Search } from "lucide-react";
-import { useListingInterests } from "../../hooks/useWholesaleListingsQuery";
+import {
+  useListingInterests,
+  useMarkAllInterestsReadMutation,
+  useUnreadInterestsCount,
+} from "../../hooks/useWholesaleListingsQuery";
 
 const formatDate = (value: string) => {
   try {
@@ -24,6 +28,9 @@ export const ListingInterestsTable: React.FC = () => {
       limit: 20,
       search: searchTerm || undefined,
     });
+
+  const { data: unreadCount = 0 } = useUnreadInterestsCount();
+  const markAllRead = useMarkAllInterestsReadMutation();
 
   const interests = data?.data ?? [];
   const totalPages = data?.pagination?.totalPages ?? 1;
@@ -48,14 +55,27 @@ export const ListingInterestsTable: React.FC = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => refetch()}
-          disabled={isFetching}
-          className="self-start sm:self-auto p-2.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-all disabled:opacity-50 cursor-pointer shrink-0"
-          title="Refresh"
-        >
-          <RefreshCw className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`} />
-        </button>
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {unreadCount > 0 && (
+            <button
+              onClick={() => markAllRead.mutate()}
+              disabled={markAllRead.isPending}
+              className="px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-all disabled:opacity-50 cursor-pointer whitespace-nowrap"
+            >
+              Mark all as read ({unreadCount})
+            </button>
+          )}
+          <button
+            onClick={() => refetch()}
+            disabled={isFetching}
+            className="p-2.5 text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-all disabled:opacity-50 cursor-pointer shrink-0"
+            title="Refresh"
+          >
+            <RefreshCw
+              className={`w-4 h-4 ${isFetching ? "animate-spin" : ""}`}
+            />
+          </button>
+        </div>
       </div>
 
       <div className="bg-white dark:bg-slate-900 rounded-[22px] border border-slate-100/80 dark:border-slate-800/80 shadow-xs p-4 md:p-6 space-y-6">
@@ -111,8 +131,19 @@ export const ListingInterestsTable: React.FC = () => {
                     className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors align-top"
                   >
                     <td className="py-4 px-3">
-                      <p className="font-bold text-slate-900 dark:text-white">
-                        {interest.name}
+                      <p className="flex items-center gap-2 font-bold">
+                        {interest.readAt === null && (
+                          <span
+                            aria-label="Unread"
+                            className="w-2 h-2 rounded-full bg-blue-600 shrink-0"
+                          />
+                        )}
+                        <Link
+                          href={`/wholesale-listings/interests/${interest.id}`}
+                          className="text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
+                        >
+                          {interest.name}
+                        </Link>
                       </p>
                       <p className="text-[11px] font-medium text-slate-400 mt-0.5">
                         <a
@@ -144,7 +175,7 @@ export const ListingInterestsTable: React.FC = () => {
                         </span>
                       )}
                     </td>
-                    <td className="py-4 px-3 font-medium text-slate-500 dark:text-slate-400 max-w-[320px] whitespace-pre-line wrap-break-word">
+                    <td className="py-4 px-3 font-medium text-slate-500 dark:text-slate-400 max-w-[320px] wrap-break-word line-clamp-2">
                       {interest.message || "—"}
                     </td>
                     <td className="py-4 px-3 font-medium text-slate-500 dark:text-slate-400 whitespace-nowrap">
