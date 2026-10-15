@@ -78,6 +78,7 @@ export const Header: React.FC<HeaderProps> = ({
 
     if (isDark) {
       document.documentElement.classList.add("dark");
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- the saved theme only exists in the browser, so state is set after mount
       setDarkMode(true);
     } else {
       document.documentElement.classList.remove("dark");

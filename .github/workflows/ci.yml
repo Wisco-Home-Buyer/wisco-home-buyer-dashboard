@@ -33,11 +33,8 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
-      # Older code still has lint errors (mostly no-explicit-any). Report them
-      # without blocking; remove continue-on-error once they are fixed.
-      - name: Lint (not blocking)
+      - name: Lint
         run: npm run lint
-        continue-on-error: true
 
       - name: Build
         run: npm run build

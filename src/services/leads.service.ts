@@ -35,7 +35,7 @@ export interface PropertyEnrichment {
   errorMessage?: string | null;
   createdAt: string;
   updatedAt: string;
-  comparables?: any[];
+  comparables?: unknown[];
 }
 
 export interface PropertyDetail {
@@ -136,7 +136,7 @@ export interface PaginatedLeadsResponse {
   };
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   statusCode: number;
   message: string;

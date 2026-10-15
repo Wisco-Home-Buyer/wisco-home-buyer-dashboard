@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ApiErrorLike } from "../lib/api-error";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { authService, LoginPayload } from "../services/auth.service";
@@ -37,7 +38,7 @@ export const useLoginMutation = () => {
       toast.success("Logged in successfully!");
       router.push("/");
     },
-    onError: (err: any) => {
+    onError: (err: ApiErrorLike) => {
       toast.error(
         err?.response?.data?.message || err?.message || "Login failed. Please try again.",
       );

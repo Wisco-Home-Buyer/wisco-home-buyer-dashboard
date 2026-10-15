@@ -117,7 +117,7 @@ export default function LeadDetailPage() {
           ) : isError ? (
             <div className="p-12 text-center space-y-4 bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800">
               <p className="text-sm font-semibold text-rose-600 dark:text-rose-400">
-                {(error as any)?.message || "Failed to load lead details."}
+                {error?.message || "Failed to load lead details."}
               </p>
               <div className="flex justify-center gap-3">
                 <Link

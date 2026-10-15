@@ -33,7 +33,7 @@ export const PropertiesTable: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [isMapView, setIsMapView] = useState(false);
-  const [selectedPropertyId, setSelectedPropertyId] = useState<string | null>(
+  const [pickedPropertyId, setSelectedPropertyId] = useState<string | null>(
     null,
   );
 
@@ -52,12 +52,10 @@ export const PropertiesTable: React.FC = () => {
 
   // Keep selection valid when the list changes; do not auto-pick the first item
   // so map view can open in "show all" mode.
-  useEffect(() => {
-    if (!selectedPropertyId) return;
-    if (!properties.some((p) => p.id === selectedPropertyId)) {
-      setSelectedPropertyId(null);
-    }
-  }, [properties, selectedPropertyId]);
+  const selectedPropertyId =
+    pickedPropertyId && properties.some((p) => p.id === pickedPropertyId)
+      ? pickedPropertyId
+      : null;
 
   const openMapView = () => {
     setSelectedPropertyId(null);

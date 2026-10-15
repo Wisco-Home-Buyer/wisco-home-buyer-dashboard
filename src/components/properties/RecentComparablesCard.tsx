@@ -1,10 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { format } from "date-fns";
+import React, { useMemo, useState } from "react";
 import { Loader2, MapPin, TrendingUp } from "lucide-react";
-import type { Marker as LeafletMarker } from "leaflet";
 
 export interface ComparableSale {
   id: string;

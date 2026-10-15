@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ApiErrorLike } from "../lib/api-error";
 import { toast } from "sonner";
 import {
   leadsService,
@@ -64,7 +65,7 @@ export const useUpdateLeadStatusMutation = () => {
       queryClient.invalidateQueries({ queryKey: [LEADS_QUERY_KEY] });
       toast.success(`Lead status updated to ${variables.status}`);
     },
-    onError: (err: any) => {
+    onError: (err: ApiErrorLike) => {
       toast.error(
         err?.response?.data?.message || err?.message || "Failed to update status"
       );
@@ -82,7 +83,7 @@ export const useAssignLeadMutation = () => {
       queryClient.invalidateQueries({ queryKey: [LEADS_QUERY_KEY] });
       toast.success("Lead assignment updated successfully");
     },
-    onError: (err: any) => {
+    onError: (err: ApiErrorLike) => {
       toast.error(
         err?.response?.data?.message || err?.message || "Failed to assign lead"
       );
@@ -99,7 +100,7 @@ export const useDeleteLeadMutation = () => {
       queryClient.invalidateQueries({ queryKey: [LEADS_QUERY_KEY] });
       toast.success("Lead deleted successfully");
     },
-    onError: (err: any) => {
+    onError: (err: ApiErrorLike) => {
       toast.error(
         err?.response?.data?.message || err?.message || "Failed to delete lead"
       );
@@ -121,7 +122,7 @@ export const useExportLeadsMutation = () => {
       window.URL.revokeObjectURL(url);
       toast.success("Leads CSV exported successfully");
     },
-    onError: (err: any) => {
+    onError: (err: ApiErrorLike) => {
       toast.error(
         err?.response?.data?.message || err?.message || "Failed to export CSV"
       );

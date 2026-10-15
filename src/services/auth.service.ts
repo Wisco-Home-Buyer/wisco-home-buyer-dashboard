@@ -12,7 +12,7 @@ export interface AuthResponseData {
   user?: UserProfile;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   statusCode: number;
   message: string;

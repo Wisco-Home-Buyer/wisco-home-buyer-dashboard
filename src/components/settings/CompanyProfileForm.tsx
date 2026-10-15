@@ -30,6 +30,7 @@ export const CompanyProfileForm: React.FC = () => {
 
   useEffect(() => {
     if (!user) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- the form copies the signed-in user once it loads, and again when it changes
     setFormData({
       name: user.name || "",
       email: user.email || "",
