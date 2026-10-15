@@ -33,3 +33,30 @@ export async function uploadAvatar(file: File): Promise<string> {
   }
   return url;
 }
+
+export async function uploadListingImages(files: File[]): Promise<string[]> {
+  const body = new FormData();
+  files.forEach((file) => body.append("files", file));
+
+  const { data } = await axiosInstance.post(
+    "/api/uploads/listing-images",
+    body,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+      transformRequest: [
+        (payload, headers) => {
+          if (payload instanceof FormData && headers) {
+            delete headers["Content-Type"];
+          }
+          return payload;
+        },
+      ],
+    }
+  );
+
+  const urls = data?.data?.urls ?? data?.urls;
+  if (!Array.isArray(urls) || urls.length === 0) {
+    throw new Error("Upload succeeded but no photo URLs were returned");
+  }
+  return urls as string[];
+}

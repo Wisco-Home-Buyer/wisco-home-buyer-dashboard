@@ -21,3 +21,7 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Last updated
 2026-10-14 — memory.md created.
+
+## Wholesale listings (branch feat/wholesale-listings, 2026-10-16, uncommitted)
+- New sidebar item and pages `/wholesale-listings` (table), `/new`, `/[id]` (edit). Table has 'Notify buyers' (confirm dialog, shows last-sent time). Form uploads photos via `/api/uploads/listing-images`. `lucide-react` icons are hand-declared in `src/types/lucide-react.d.ts`; add new icons there.
+- `npm run lint` is broken on baseline (ESLint config circular-JSON error), not caused by this work.

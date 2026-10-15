@@ -64,6 +64,8 @@ declare module "lucide-react" {
   export const User: LucideIcon;
   export const Shield: LucideIcon;
   export const UserPlus: LucideIcon;
+  export const Plus: LucideIcon;
+  export const ImagePlus: LucideIcon;
 
   const icons: Record<string, LucideIcon>;
   export default icons;
