@@ -51,6 +51,12 @@ export const usersService = {
     );
   },
 
+  resendInvite(id: string) {
+    return unwrap<InviteUserResult>(
+      axiosInstance.post(`/api/users/${id}/resend-invite`),
+    );
+  },
+
   updateRole(id: string, role: ApiRole) {
     return unwrap<TeamUser>(
       axiosInstance.patch(`/api/users/${id}/role`, { role }),

@@ -5,6 +5,7 @@ import { UserPlus, ChevronDown, X, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import {
   useInviteUserMutation,
+  useResendInviteMutation,
   useRemoveUserMutation,
   useUpdateUserRoleMutation,
   useUpdateUserStatusMutation,
@@ -29,6 +30,8 @@ export const UsersRolesTab: React.FC = () => {
     canViewUsers,
   );
   const inviteMutation = useInviteUserMutation();
+  const resendInviteMutation = useResendInviteMutation();
+  const [resendingId, setResendingId] = useState<string | null>(null);
   const updateRoleMutation = useUpdateUserRoleMutation();
   const updateStatusMutation = useUpdateUserStatusMutation();
   const removeMutation = useRemoveUserMutation();
@@ -352,6 +355,23 @@ export const UsersRolesTab: React.FC = () => {
 
                 {canManageMember && (
                   <div className="flex items-center gap-1.5 shrink-0">
+                    {member.status === "INVITED" && (
+                      <button
+                        type="button"
+                        disabled={resendingId === member.id}
+                        onClick={() => {
+                          setResendingId(member.id);
+                          resendInviteMutation.mutate(member.id, {
+                            onSettled: () => setResendingId(null),
+                          });
+                        }}
+                        className="px-2.5 py-1.5 text-[11px] font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/40 rounded-xl cursor-pointer whitespace-nowrap disabled:opacity-50"
+                      >
+                        {resendingId === member.id
+                          ? "Sending..."
+                          : "Resend invite"}
+                      </button>
+                    )}
                     {member.status !== "INVITED" && (
                       <button
                         type="button"
