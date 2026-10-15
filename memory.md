@@ -24,7 +24,7 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Wholesale listings (branch feat/wholesale-listings, 2026-10-16, uncommitted)
 - New sidebar item and pages `/wholesale-listings` (table), `/new`, `/[id]` (edit). Table has 'Notify buyers' (confirm dialog, shows last-sent time). Form uploads photos via `/api/uploads/listing-images`. `lucide-react` icons are hand-declared in `src/types/lucide-react.d.ts`; add new icons there.
-- `npm run lint` is broken on baseline (ESLint config circular-JSON error), not caused by this work.
+- `npm run lint` works (flat config, fixed 2026-10-16). 21 errors remain in older code (mostly `no-explicit-any`, plus `set-state-in-effect`); new code should be clean. Removed the unused `lib/api-client.ts` and `lib/auth-service.ts` (the app uses `lib/axios.ts` and `services/auth.service.ts`).
 
 ## User status controls (branch feat/user-status-controls, 2026-10-16, uncommitted)
 - Settings > Users & Roles: per-row Disable/Enable and Remove with confirm dialog (hidden for yourself; SUPER_ADMIN rows only for SUPER_ADMIN). Status type is `SUSPENDED` (was wrongly `DISABLED`). Needs the matching server endpoint deployed first.
