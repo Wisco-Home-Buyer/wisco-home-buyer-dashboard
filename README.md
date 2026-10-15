@@ -64,6 +64,12 @@ src/
 
 New icons from `lucide-react` must be declared in `src/types/lucide-react.d.ts`.
 
+## CI
+
+GitHub Actions (`.github/workflows/ci.yml`) runs `tsc --noEmit` and the production
+build on every pull request and on pushes to `main`. Lint runs too but does not
+block yet because older code still has errors.
+
 ## Deployment
 
 Built as a standard Next.js app. Set `NEXT_PUBLIC_API_URL` at build time. Deploy the
