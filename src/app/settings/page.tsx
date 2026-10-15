@@ -6,12 +6,13 @@ import { Header } from "@/components/dashboard/Header";
 import { CompanyProfileForm } from "@/components/settings/CompanyProfileForm";
 import { UsersRolesTab } from "@/components/settings/UsersRolesTab";
 import { DatabaseBackupTab } from "@/components/settings/DatabaseBackupTab";
+import { AutomationSettingsTab } from "@/components/settings/AutomationSettingsTab";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SettingsPage() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<"profile" | "users" | "database">(
+  const [activeTab, setActiveTab] = useState<"profile" | "users" | "automation" | "database">(
     "profile"
   );
 
@@ -77,6 +78,20 @@ export default function SettingsPage() {
               {user?.role === "SUPER_ADMIN" && (
                 <button
                   type="button"
+                  onClick={() => setActiveTab("automation")}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    activeTab === "automation"
+                      ? "bg-[#0e1726] text-white shadow-xs dark:bg-blue-600"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  Automation
+                </button>
+              )}
+
+              {user?.role === "SUPER_ADMIN" && (
+                <button
+                  type="button"
                   onClick={() => setActiveTab("database")}
                   className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
                     activeTab === "database"
@@ -95,6 +110,8 @@ export default function SettingsPage() {
                 <CompanyProfileForm />
               ) : activeTab === "users" ? (
                 <UsersRolesTab />
+              ) : activeTab === "automation" ? (
+                <AutomationSettingsTab />
               ) : (
                 <DatabaseBackupTab />
               )}
