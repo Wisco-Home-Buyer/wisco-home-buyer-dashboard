@@ -4,6 +4,7 @@ import React, { useRef, useState } from "react";
 import { AlertTriangle, Download, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
+import { DataCleanupCard } from "./DataCleanupCard";
 import {
   backupService,
   blobErrorMessage,
@@ -116,6 +117,8 @@ export const DatabaseBackupTab: React.FC = () => {
           {isDownloading ? "Preparing backup..." : "Download backup"}
         </button>
       </div>
+
+      <DataCleanupCard />
 
       <div className={`${cardClass} border-rose-200 dark:border-rose-900/60`}>
         <div className="flex items-start gap-3">
