@@ -9,6 +9,7 @@ import {
   WholesaleListing,
   WholesaleListingInput,
 } from "../../services/wholesaleListings.service";
+import { ImageLightbox } from "./ImageLightbox";
 import {
   resolveAssetUrl,
   uploadListingImages,
@@ -66,6 +67,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
   );
   const [images, setImages] = useState<string[]>(listing?.images ?? []);
   const [isUploading, setIsUploading] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const handleFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -355,12 +357,19 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
                 key={url}
                 className="relative aspect-4/3 rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={resolveAssetUrl(url) ?? ""}
-                  alt={`Listing photo ${index + 1}`}
-                  className="w-full h-full object-cover"
-                />
+                <button
+                  type="button"
+                  onClick={() => setLightboxIndex(index)}
+                  aria-label={`View photo ${index + 1} larger`}
+                  className="block w-full h-full cursor-zoom-in"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={resolveAssetUrl(url) ?? ""}
+                    alt={`Listing photo ${index + 1}`}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
                 <button
                   type="button"
                   onClick={() => removeImage(url)}
@@ -393,6 +402,12 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
           {isSubmitting ? "Saving..." : submitLabel}
         </button>
       </div>
+
+      <ImageLightbox
+        images={images.map((url) => resolveAssetUrl(url) ?? "")}
+        index={lightboxIndex}
+        onIndexChange={setLightboxIndex}
+      />
     </form>
   );
 };
