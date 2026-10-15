@@ -4,7 +4,7 @@ export type ApiRole = "SUPER_ADMIN" | "ADMIN" | "ANALYST" | "VIEWER";
 export type ApiUserStatus = "ACTIVE" | "INVITED" | "SUSPENDED";
 
 /** Must match INVITE_RESEND_COOLDOWN_SECONDS on the server; the server enforces it. */
-export const INVITE_RESEND_COOLDOWN_SECONDS = 120;
+export const INVITE_RESEND_COOLDOWN_SECONDS = 300;
 
 export interface TeamUser {
   id: string;
