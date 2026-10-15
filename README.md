@@ -38,7 +38,7 @@ npm run dev -- -p 3001   # the API uses 3000 by default
 | `npm run dev` | Development server |
 | `npm run build` | Production build (also type-checks) |
 | `npm start` | Run the production build |
-| `npm run lint` | ESLint (the config currently fails to load; use `npx tsc --noEmit` and `npm run build` meanwhile) |
+| `npm run lint` | ESLint. Older code still has about 30 errors (mostly `no-explicit-any`) that are not fixed yet; new code should lint clean |
 
 ## Environment
 
