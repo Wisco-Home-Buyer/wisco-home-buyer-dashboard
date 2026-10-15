@@ -64,6 +64,46 @@ export function useUpdateUserRoleMutation() {
   });
 }
 
+export function useUpdateUserStatusMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      id,
+      status,
+    }: {
+      id: string;
+      status: "ACTIVE" | "SUSPENDED";
+    }) => usersService.updateStatus(id, status),
+    onSuccess: (_data, { status }) => {
+      void queryClient.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
+      toast.success(status === "SUSPENDED" ? "User disabled" : "User enabled");
+    },
+    onError: (err: { response?: { data?: { message?: string } }; message?: string }) => {
+      toast.error(
+        err?.response?.data?.message || err?.message || "Failed to update user",
+      );
+    },
+  });
+}
+
+export function useRemoveUserMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => usersService.removeUser(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: [USERS_QUERY_KEY] });
+      toast.success("User removed");
+    },
+    onError: (err: { response?: { data?: { message?: string } }; message?: string }) => {
+      toast.error(
+        err?.response?.data?.message || err?.message || "Failed to remove user",
+      );
+    },
+  });
+}
+
 export function useUpdateProfileMutation() {
   const queryClient = useQueryClient();
   const setUser = useAuthStore((s) => s.setUser);
