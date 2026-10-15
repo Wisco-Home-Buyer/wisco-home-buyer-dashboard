@@ -263,7 +263,7 @@ export const BuyersTable: React.FC = () => {
         ) : isError ? (
           <div className="py-12 text-center space-y-3">
             <p className="text-sm font-semibold text-rose-600 dark:text-rose-400">
-              {(error as any)?.message || "Failed to load buyers from server."}
+              {error?.message || "Failed to load buyers from server."}
             </p>
             <button
               onClick={() => refetch()}

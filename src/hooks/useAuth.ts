@@ -1,4 +1,5 @@
 import { useAuthStore } from "../store/useAuthStore";
+import type { ApiErrorLike } from "../lib/api-error";
 import { useLoginMutation, useLogoutMutation, useProfileQuery } from "./useAuthMutations";
 
 export const useAuth = () => {
@@ -15,7 +16,8 @@ export const useAuth = () => {
       try {
         await loginMutation.mutateAsync({ email, password });
         return { success: true };
-      } catch (err: any) {
+      } catch (error) {
+        const err = error as ApiErrorLike;
         return {
           success: false,
           message:

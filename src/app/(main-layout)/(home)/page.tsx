@@ -15,7 +15,6 @@ import {
   formatSignedPercent,
   OverviewPeriod,
 } from "@/services/overview.service";
-import { FaUsers, FaFunnelDollar, FaHandshake, FaRegClock } from "react-icons/fa";
 
 export default function DashboardPage() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);

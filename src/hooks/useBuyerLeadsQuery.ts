@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { ApiErrorLike } from "../lib/api-error";
 import { toast } from "sonner";
 import {
   buyerLeadsService,
@@ -33,7 +34,7 @@ export const useDeleteBuyerLeadMutation = () => {
       queryClient.invalidateQueries({ queryKey: [BUYER_LEADS_QUERY_KEY] });
       toast.success("Buyer removed successfully");
     },
-    onError: (err: any) => {
+    onError: (err: ApiErrorLike) => {
       toast.error(
         err?.response?.data?.message || err?.message || "Failed to remove buyer"
       );
@@ -55,7 +56,7 @@ export const useExportBuyerLeadsMutation = () => {
       window.URL.revokeObjectURL(url);
       toast.success("Buyers list CSV exported successfully");
     },
-    onError: (err: any) => {
+    onError: (err: ApiErrorLike) => {
       toast.error(
         err?.response?.data?.message || err?.message || "Failed to export CSV"
       );

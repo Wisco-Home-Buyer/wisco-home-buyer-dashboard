@@ -26,8 +26,6 @@ export function useNotificationsSocket() {
 
   useEffect(() => {
     if (!isAuthenticated || !accessToken) {
-      setUnreadCount(0);
-      setConnected(false);
       return;
     }
 
@@ -95,5 +93,10 @@ export function useNotificationsSocket() {
     };
   }, [accessToken, isAuthenticated, queryClient]);
 
-  return { unreadCount, latest, connected };
+  const signedIn = isAuthenticated && !!accessToken;
+  return {
+    unreadCount: signedIn ? unreadCount : 0,
+    latest,
+    connected: signedIn ? connected : false,
+  };
 }

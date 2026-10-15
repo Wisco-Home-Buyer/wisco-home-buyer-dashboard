@@ -38,7 +38,7 @@ npm run dev -- -p 3001   # the API uses 3000 by default
 | `npm run dev` | Development server |
 | `npm run build` | Production build (also type-checks) |
 | `npm start` | Run the production build |
-| `npm run lint` | ESLint. Older code still has about 30 errors (mostly `no-explicit-any`) that are not fixed yet; new code should lint clean |
+| `npm run lint` | ESLint (no errors; one `exhaustive-deps` warning in `PropertyDetailsCard`) |
 
 ## Environment
 
@@ -67,8 +67,8 @@ New icons from `lucide-react` must be declared in `src/types/lucide-react.d.ts`.
 ## CI
 
 GitHub Actions (`.github/workflows/ci.yml`) runs `tsc --noEmit` and the production
-build on every pull request and on pushes to `main`. Lint runs too but does not
-block yet because older code still has errors.
+build on every pull request and on pushes to `main`. Lint runs too and a lint
+error fails the check.
 
 ## Deployment
 
