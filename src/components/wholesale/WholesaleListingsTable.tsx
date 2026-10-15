@@ -108,6 +108,12 @@ export const WholesaleListingsTable: React.FC = () => {
             />
           </button>
           <Link
+            href="/wholesale-listings/interests"
+            className="px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-all whitespace-nowrap"
+          >
+            Interested buyers
+          </Link>
+          <Link
             href="/wholesale-listings/new"
             className="flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-[#0f2347] hover:bg-[#1a386d] dark:bg-blue-600 rounded-xl transition-all whitespace-nowrap"
           >

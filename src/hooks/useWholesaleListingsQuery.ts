@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
   wholesaleListingsService,
+  QueryListingInterestsParams,
   QueryWholesaleListingsParams,
   WholesaleListingInput,
 } from "../services/wholesaleListings.service";
@@ -20,6 +21,14 @@ export const useWholesaleListings = (
     queryKey: [WHOLESALE_LISTINGS_QUERY_KEY, params],
     queryFn: () => wholesaleListingsService.getListings(params),
     staleTime: 60 * 1000,
+  });
+};
+
+export const useListingInterests = (params: QueryListingInterestsParams = {}) => {
+  return useQuery({
+    queryKey: [WHOLESALE_LISTINGS_QUERY_KEY, "interests", params],
+    queryFn: () => wholesaleListingsService.getInterests(params),
+    staleTime: 30 * 1000,
   });
 };
 
