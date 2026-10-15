@@ -9,6 +9,7 @@ import {
   FaUsers,
   FaUserFriends,
   FaBuilding,
+  FaTags,
   FaLayerGroup,
   FaChartLine,
 } from "react-icons/fa";
@@ -74,6 +75,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       name: "Properties",
       icon: FaBuilding,
       href: "/properties",
+      badge: null,
+    },
+    {
+      name: "Wholesale Listings",
+      icon: FaTags,
+      href: "/wholesale-listings",
       badge: null,
     },
     {
