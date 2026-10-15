@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
 import { DataCleanupCard } from "./DataCleanupCard";
 import { StoredBackupsCard } from "./StoredBackupsCard";
+import { UnusedFilesCard } from "./UnusedFilesCard";
 import {
   backupService,
   blobErrorMessage,
@@ -120,6 +121,8 @@ export const DatabaseBackupTab: React.FC = () => {
       </div>
 
       <StoredBackupsCard />
+
+      <UnusedFilesCard />
 
       <DataCleanupCard />
 
