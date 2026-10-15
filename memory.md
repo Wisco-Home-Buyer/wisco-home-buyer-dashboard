@@ -49,3 +49,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Cleanup card: Everything option (branch feat/cleanup-all-data-ui, stacked on feat/app-settings-ui, 2026-10-16)
 - Third option 'Everything' in Settings > Database > Clear imported data; requires typing `DELETE EVERYTHING` plus the backup tick.
+
+## Listing video upload (branch feat/listing-video-upload, 2026-10-16)
+- Listing form: video is uploaded (MP4/MOV/WEBM, up to 200 MB, with progress) to `POST /api/uploads/listing-video`; the YouTube link field is gone (old external links still show and can be removed). Detail page plays the video. `lib/video.ts` tells an uploaded file from an external link. Needs the server video endpoint deployed first.
