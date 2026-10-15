@@ -28,3 +28,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## User status controls (branch feat/user-status-controls, 2026-10-16, uncommitted)
 - Settings > Users & Roles: per-row Disable/Enable and Remove with confirm dialog (hidden for yourself; SUPER_ADMIN rows only for SUPER_ADMIN). Status type is `SUSPENDED` (was wrongly `DISABLED`). Needs the matching server endpoint deployed first.
+
+## Interested buyers (branch feat/listing-interests, 2026-10-16, uncommitted)
+- `/wholesale-listings/interests` lists public "I'm interested" requests (linked from the listings page). Needs the server `GET /api/wholesale-listings/interests` deployed first.

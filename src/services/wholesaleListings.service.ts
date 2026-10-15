@@ -41,6 +41,24 @@ export interface WholesaleListingInput {
   imageUrls?: string[];
 }
 
+export interface ListingInterest {
+  id: string;
+  listingId: string | null;
+  listingTitle: string;
+  name: string;
+  email: string;
+  phone: string;
+  message: string | null;
+  createdAt: string;
+}
+
+export interface QueryListingInterestsParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  listingId?: string;
+}
+
 export interface QueryWholesaleListingsParams {
   page?: number;
   limit?: number;
@@ -60,6 +78,21 @@ export interface ApiResponse<T = unknown> {
   statusCode: number;
   message: string;
   data: T;
+}
+
+export interface PaginatedListingInterestsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: ListingInterest[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
+  };
 }
 
 export interface PaginatedWholesaleListingsResponse {
@@ -84,6 +117,17 @@ export const wholesaleListingsService = {
     const { data } =
       await axiosInstance.get<PaginatedWholesaleListingsResponse>(
         "/api/wholesale-listings",
+        { params }
+      );
+    return data;
+  },
+
+  async getInterests(
+    params?: QueryListingInterestsParams
+  ): Promise<PaginatedListingInterestsResponse> {
+    const { data } =
+      await axiosInstance.get<PaginatedListingInterestsResponse>(
+        "/api/wholesale-listings/interests",
         { params }
       );
     return data;
