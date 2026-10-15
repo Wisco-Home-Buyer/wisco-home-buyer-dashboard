@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -10,6 +10,8 @@ import {
   WholesaleListingInput,
 } from "../../services/wholesaleListings.service";
 import { ImageLightbox } from "./ImageLightbox";
+import { US_STATES } from "../../lib/us-states";
+import { lookupZip } from "../../services/zip.service";
 import {
   resolveAssetUrl,
   uploadListingImages,
@@ -65,9 +67,46 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
   const [visibility, setVisibility] = useState<ListingVisibility>(
     listing?.visibility ?? "PRIVATE"
   );
+  const [zipStatus, setZipStatus] = useState<"idle" | "loading" | "notfound">(
+    "idle"
+  );
+  const zipAbortRef = useRef<AbortController | null>(null);
   const [images, setImages] = useState<string[]>(listing?.images ?? []);
   const [isUploading, setIsUploading] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+  useEffect(() => () => zipAbortRef.current?.abort(), []);
+
+  const handleZipChange = (value: string) => {
+    const cleaned = value.replace(/[^\d-]/g, "");
+    setZip(cleaned);
+    zipAbortRef.current?.abort();
+
+    const fiveDigits = cleaned.match(/^\d{5}(?:-\d{4})?$/)?.[0].slice(0, 5);
+    if (!fiveDigits) {
+      setZipStatus("idle");
+      return;
+    }
+
+    const controller = new AbortController();
+    zipAbortRef.current = controller;
+    setZipStatus("loading");
+
+    lookupZip(fiveDigits, controller.signal)
+      .then((result) => {
+        if (controller.signal.aborted) return;
+        if (result) {
+          setCity(result.city);
+          setState(result.state);
+          setZipStatus("idle");
+        } else {
+          setZipStatus("notfound");
+        }
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setZipStatus("notfound");
+      });
+  };
 
   const handleFiles = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files ?? []);
@@ -210,19 +249,51 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          <div className="sm:col-span-2">
-            <label className={labelClass} htmlFor="street">
-              Street
+        <div>
+          <label className={labelClass} htmlFor="street">
+            Street
+          </label>
+          <input
+            id="street"
+            required
+            maxLength={200}
+            autoComplete="address-line1"
+            value={street}
+            onChange={(e) => setStreet(e.target.value)}
+            placeholder="123 Main St"
+            className={inputClass}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+            <label className={labelClass} htmlFor="zip">
+              ZIP
             </label>
             <input
-              id="street"
+              id="zip"
               required
-              maxLength={200}
-              value={street}
-              onChange={(e) => setStreet(e.target.value)}
+              inputMode="numeric"
+              autoComplete="postal-code"
+              pattern="\d{5}(-\d{4})?"
+              maxLength={10}
+              value={zip}
+              onChange={(e) => handleZipChange(e.target.value)}
               className={inputClass}
             />
+            {zipStatus !== "idle" && (
+              <p
+                className={`mt-1 text-[11px] font-medium ${
+                  zipStatus === "notfound"
+                    ? "text-amber-600 dark:text-amber-400"
+                    : "text-slate-400"
+                }`}
+              >
+                {zipStatus === "loading"
+                  ? "Looking up ZIP..."
+                  : "ZIP not found. Enter the city and state manually."}
+              </p>
+            )}
           </div>
           <div>
             <label className={labelClass} htmlFor="city">
@@ -232,37 +303,29 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
               id="city"
               required
               maxLength={100}
+              autoComplete="address-level2"
               value={city}
               onChange={(e) => setCity(e.target.value)}
               className={inputClass}
             />
           </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={labelClass} htmlFor="state">
-                State
-              </label>
-              <input
-                id="state"
-                maxLength={2}
-                value={state}
-                onChange={(e) => setState(e.target.value.toUpperCase())}
-                className={inputClass}
-              />
-            </div>
-            <div>
-              <label className={labelClass} htmlFor="zip">
-                ZIP
-              </label>
-              <input
-                id="zip"
-                required
-                pattern="\d{5}(-\d{4})?"
-                value={zip}
-                onChange={(e) => setZip(e.target.value)}
-                className={inputClass}
-              />
-            </div>
+          <div>
+            <label className={labelClass} htmlFor="state">
+              State
+            </label>
+            <select
+              id="state"
+              required
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              className={inputClass}
+            >
+              {US_STATES.map((option) => (
+                <option key={option.code} value={option.code}>
+                  {option.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
