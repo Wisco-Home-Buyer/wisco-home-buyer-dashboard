@@ -38,3 +38,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Database backup/restore UI (branch feat/database-backup-ui, 2026-10-16, uncommitted)
 - Settings > Database tab (SUPER_ADMIN only): download backup (`GET /api/backup`) and restore (`POST /api/backup/restore`, must type RESTORE; signs you out after). Server endpoints already existed; backup downloads into browser memory (fine for current size).
+
+## Data cleanup card (branch feat/data-cleanup-ui, stacked on feat/database-backup-ui, 2026-10-16)
+- Settings > Database shows 'Clear imported data': live counts, two checkboxes, backup acknowledgement and typing DELETE. Needs server `/api/data-cleanup/*` deployed.
