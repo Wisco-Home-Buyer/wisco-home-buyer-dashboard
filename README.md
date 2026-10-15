@@ -1,36 +1,70 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# WiscoHome Buyer Dashboard
 
-## Getting Started
+Internal admin and CRM dashboard for the Wisco Home Buyer team. It talks to
+`wisco-home-buyer-server` (NestJS API) and is used by staff, not the public.
 
-First, run the development server:
+## Stack
+
+- **Next.js** (App Router), React, TypeScript, Tailwind CSS
+- **TanStack Query** for server state, **axios** for API calls (token refresh built in)
+- **Zustand** for the auth store, **sonner** for toasts
+
+> This Next.js version has breaking changes from older releases. Read the guide in
+> `node_modules/next/dist/docs/` before changing routing or data fetching.
+
+## Features
+
+- **Leads**, **Buyers List**, **Properties**, **Public Records**, **Analytics**
+- **Wholesale Listings**: create/edit listings (photos with a large-photo popup,
+  video link, Public/Private, US state and ZIP autofill), a read-only detail page
+  per listing, "Notify buyers" email, and **Interested buyers** with an unread badge
+- **Settings** (role-based):
+  - Profile and **Users & Roles**: invite, change role, disable/enable, remove
+  - **Automation** (Super Admin): nightly public records pull on/off, interest
+    email recipient, public website URL
+  - **Database** (Super Admin): download a backup, restore from a file, and clear
+    imported or all business data (typed confirmation, backup first)
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env     # set NEXT_PUBLIC_API_URL to the API origin
+npm install
+npm run dev -- -p 3001   # the API uses 3000 by default
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Development server |
+| `npm run build` | Production build (also type-checks) |
+| `npm start` | Run the production build |
+| `npm run lint` | ESLint (the config currently fails to load; use `npx tsc --noEmit` and `npm run build` meanwhile) |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Purpose |
+| --- | --- |
+| `NEXT_PUBLIC_API_URL` | Backend API origin, no trailing slash |
 
-## Learn More
+Never put secrets in `NEXT_PUBLIC_*` variables: they are shipped to the browser.
 
-To learn more about Next.js, take a look at the following resources:
+## Project structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
+src/
+├── app/            # routes: (auth-layout) login/invite/reset, leads, buyers, properties,
+│                   #   wholesale-listings (+ /[id], /[id]/edit, /new, /interests), settings, ...
+├── components/     # feature folders (leads, buyers, wholesale, settings, ...) and ui/
+├── hooks/          # TanStack Query hooks, one file per feature
+├── services/       # API clients (axios), one file per feature
+├── store/          # Zustand auth store
+├── lib/            # axios instance, helpers (us-states)
+└── types/          # type shims (lucide-react icons are declared by hand here)
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+New icons from `lucide-react` must be declared in `src/types/lucide-react.d.ts`.
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built as a standard Next.js app. Set `NEXT_PUBLIC_API_URL` at build time. Deploy the
+server first when a change depends on new API endpoints.
