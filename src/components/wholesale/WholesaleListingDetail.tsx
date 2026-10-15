@@ -9,6 +9,7 @@ import {
   useWholesaleListingDetail,
 } from "../../hooks/useWholesaleListingsQuery";
 import { resolveAssetUrl } from "../../services/uploads.service";
+import { isUploadedVideo } from "../../lib/video";
 import { ImageLightbox } from "./ImageLightbox";
 
 const STATUS_LABELS = {
@@ -129,7 +130,15 @@ export const WholesaleListingDetail: React.FC<{ listingId: string }> = ({
           {listing.description}
         </p>
 
-        {listing.videoUrl && (
+        {listing.videoUrl && isUploadedVideo(listing.videoUrl) && (
+          <video
+            controls
+            preload="metadata"
+            src={resolveAssetUrl(listing.videoUrl) ?? undefined}
+            className="w-full max-w-xl rounded-2xl bg-black"
+          />
+        )}
+        {listing.videoUrl && !isUploadedVideo(listing.videoUrl) && (
           <a
             href={listing.videoUrl}
             target="_blank"

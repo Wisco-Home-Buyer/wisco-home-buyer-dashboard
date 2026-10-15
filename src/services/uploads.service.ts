@@ -60,3 +60,41 @@ export async function uploadListingImages(files: File[]): Promise<string[]> {
   }
   return urls as string[];
 }
+
+export const VIDEO_MAX_MB = 200;
+export const VIDEO_ACCEPT = "video/mp4,video/quicktime,video/webm";
+
+export async function uploadListingVideo(
+  file: File,
+  onProgress?: (percent: number) => void
+): Promise<string> {
+  const body = new FormData();
+  body.append("file", file);
+
+  const { data } = await axiosInstance.post(
+    "/api/uploads/listing-video",
+    body,
+    {
+      headers: { "Content-Type": "multipart/form-data" },
+      transformRequest: [
+        (payload, headers) => {
+          if (payload instanceof FormData && headers) {
+            delete headers["Content-Type"];
+          }
+          return payload;
+        },
+      ],
+      onUploadProgress: (event) => {
+        if (onProgress && event.total) {
+          onProgress(Math.round((event.loaded / event.total) * 100));
+        }
+      },
+    }
+  );
+
+  const url = data?.data?.url ?? data?.url;
+  if (!url || typeof url !== "string") {
+    throw new Error("Upload succeeded but no video URL was returned");
+  }
+  return url;
+}

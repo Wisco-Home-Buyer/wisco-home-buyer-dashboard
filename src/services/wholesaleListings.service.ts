@@ -35,7 +35,7 @@ export interface WholesaleListingInput {
   bedrooms?: number;
   bathrooms?: number;
   squareFeet?: number;
-  videoUrl?: string;
+  videoUrl?: string | null;
   status?: ListingStatus;
   visibility?: ListingVisibility;
   imageUrls?: string[];

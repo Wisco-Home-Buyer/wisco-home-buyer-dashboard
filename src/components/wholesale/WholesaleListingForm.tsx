@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { ImagePlus, Loader2, X } from "lucide-react";
+import { ImagePlus, Loader2, Upload, X } from "lucide-react";
 import { toast } from "sonner";
 import {
   ListingStatus,
@@ -15,7 +15,11 @@ import { lookupZip } from "../../services/zip.service";
 import {
   resolveAssetUrl,
   uploadListingImages,
+  uploadListingVideo,
+  VIDEO_ACCEPT,
+  VIDEO_MAX_MB,
 } from "../../services/uploads.service";
+import { isUploadedVideo } from "../../lib/video";
 
 const MAX_IMAGES = 20;
 
@@ -61,6 +65,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
     listing?.squareFeet != null ? String(listing.squareFeet) : ""
   );
   const [videoUrl, setVideoUrl] = useState(listing?.videoUrl ?? "");
+  const [videoProgress, setVideoProgress] = useState<number | null>(null);
   const [status, setStatus] = useState<ListingStatus>(
     listing?.status ?? "AVAILABLE"
   );
@@ -135,6 +140,33 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
     }
   };
 
+  const handleVideo = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    if (file.size > VIDEO_MAX_MB * 1024 * 1024) {
+      toast.error(`The video must be ${VIDEO_MAX_MB} MB or smaller`);
+      return;
+    }
+
+    setVideoProgress(0);
+    try {
+      const url = await uploadListingVideo(file, setVideoProgress);
+      setVideoUrl(url);
+    } catch (err) {
+      const e = err as {
+        response?: { data?: { message?: string } };
+        message?: string;
+      };
+      toast.error(
+        e?.response?.data?.message || e?.message || "Failed to upload video"
+      );
+    } finally {
+      setVideoProgress(null);
+    }
+  };
+
   const removeImage = (url: string) => {
     setImages((current) => current.filter((item) => item !== url));
   };
@@ -159,7 +191,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
       bedrooms: optionalNumber(bedrooms),
       bathrooms: optionalNumber(bathrooms),
       squareFeet: optionalNumber(squareFeet),
-      videoUrl: videoUrl.trim() || undefined,
+      videoUrl: videoUrl.trim() || (listing ? null : undefined),
       status,
       visibility,
       imageUrls: images,
@@ -375,18 +407,61 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
         </div>
 
         <div>
-          <label className={labelClass} htmlFor="videoUrl">
-            Video link (YouTube / Vimeo)
-          </label>
-          <input
-            id="videoUrl"
-            type="url"
-            maxLength={500}
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-            placeholder="https://www.youtube.com/watch?v=..."
-            className={inputClass}
-          />
+          <span className={labelClass}>Video</span>
+          {videoUrl && isUploadedVideo(videoUrl) && (
+            <video
+              controls
+              preload="metadata"
+              src={resolveAssetUrl(videoUrl) ?? undefined}
+              className="w-full max-w-md rounded-2xl bg-black mb-3"
+            />
+          )}
+          {videoUrl && !isUploadedVideo(videoUrl) && (
+            <p className="mb-3 text-xs font-medium text-slate-500 dark:text-slate-400 break-all">
+              External link: {videoUrl}
+            </p>
+          )}
+          <div className="flex flex-wrap items-center gap-3">
+            <label
+              className={`inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl ${
+                videoProgress !== null ? "opacity-60" : "cursor-pointer"
+              }`}
+            >
+              {videoProgress !== null ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Upload className="w-4 h-4 text-slate-500" />
+              )}
+              <span>
+                {videoProgress !== null
+                  ? videoProgress < 100
+                    ? `Uploading ${videoProgress}%`
+                    : "Processing..."
+                  : videoUrl
+                    ? "Replace video"
+                    : "Upload video"}
+              </span>
+              <input
+                type="file"
+                accept={VIDEO_ACCEPT}
+                disabled={videoProgress !== null}
+                onChange={handleVideo}
+                className="sr-only"
+              />
+            </label>
+            {videoUrl && videoProgress === null && (
+              <button
+                type="button"
+                onClick={() => setVideoUrl("")}
+                className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
+              >
+                Remove video
+              </button>
+            )}
+          </div>
+          <p className="mt-1.5 text-[11px] font-medium text-slate-400">
+            MP4, MOV or WEBM, up to {VIDEO_MAX_MB} MB. Save the listing to keep it.
+          </p>
         </div>
       </div>
 
