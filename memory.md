@@ -58,3 +58,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Resend invite button (branch feat/resend-invite, 2026-10-16)
 - Settings > Users & Roles: pending members get a 'Resend invite' button next to Remove (shows the link in a toast when email is off). Needs server `POST /api/users/:id/resend-invite` deployed first.
+
+## Resend invite countdown (branch feat/resend-invite-cooldown, 2026-10-16)
+- The Resend invite button locks for 120s after a send and shows 'Resend in m:ss' (uses `users.inviteSentAt` from the list plus a local timestamp; `INVITE_RESEND_COOLDOWN_SECONDS` in `services/users.service.ts` mirrors the server). Needs the server cooldown PR deployed first.
