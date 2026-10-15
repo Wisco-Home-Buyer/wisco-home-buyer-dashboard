@@ -46,6 +46,27 @@ export function useInviteUserMutation() {
   });
 }
 
+export function useResendInviteMutation() {
+  return useMutation({
+    mutationFn: (id: string) => usersService.resendInvite(id),
+    onSuccess: (data) => {
+      if (data?.emailSent === false && data.inviteUrl) {
+        toast.warning("Email not configured — share this invite link", {
+          description: data.inviteUrl,
+          duration: 15000,
+        });
+      } else {
+        toast.success(`Invitation sent again to ${data?.user?.email ?? "the user"}`);
+      }
+    },
+    onError: (err: { response?: { data?: { message?: string } }; message?: string }) => {
+      toast.error(
+        err?.response?.data?.message || err?.message || "Failed to resend invite",
+      );
+    },
+  });
+}
+
 export function useUpdateUserRoleMutation() {
   const queryClient = useQueryClient();
 

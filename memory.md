@@ -55,3 +55,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Stored backups card (branch feat/stored-backups-ui, 2026-10-16)
 - Settings > Database shows 'Automatic backups': the nightly backups kept on the server (download each) and 'Back up now'. Needs the server `/api/backup/scheduled` endpoints deployed.
+
+## Resend invite button (branch feat/resend-invite, 2026-10-16)
+- Settings > Users & Roles: pending members get a 'Resend invite' button next to Remove (shows the link in a toast when email is off). Needs server `POST /api/users/:id/resend-invite` deployed first.
