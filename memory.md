@@ -41,3 +41,8 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Data cleanup card (branch feat/data-cleanup-ui, stacked on feat/database-backup-ui, 2026-10-16)
 - Settings > Database shows 'Clear imported data': live counts, two checkboxes, backup acknowledgement and typing DELETE. Needs server `/api/data-cleanup/*` deployed.
+
+
+
+## Automation settings tab (branch feat/app-settings-ui, stacked on feat/data-cleanup-ui, 2026-10-16, uncommitted)
+- Settings > Automation (SUPER_ADMIN): toggle/edit the runtime settings, 'Reset to default'. Needs server `/api/app-settings` deployed.
