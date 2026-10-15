@@ -5,6 +5,7 @@ import { AlertTriangle, Download, Loader2, Upload } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "../../hooks/useAuth";
 import { DataCleanupCard } from "./DataCleanupCard";
+import { StoredBackupsCard } from "./StoredBackupsCard";
 import {
   backupService,
   blobErrorMessage,
@@ -117,6 +118,8 @@ export const DatabaseBackupTab: React.FC = () => {
           {isDownloading ? "Preparing backup..." : "Download backup"}
         </button>
       </div>
+
+      <StoredBackupsCard />
 
       <DataCleanupCard />
 

@@ -5,6 +5,19 @@ export const RESTORE_CONFIRMATION = "RESTORE";
 /** Mirrors the server's default BACKUP_MAX_FILE_SIZE_MB. */
 export const RESTORE_MAX_MB = 512;
 
+export interface StoredBackup {
+  filename: string;
+  sizeBytes: number;
+  createdAt: string;
+}
+
+interface ApiResponse<T> {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: T;
+}
+
 export interface BackupDownload {
   blob: Blob;
   filename: string;
@@ -32,6 +45,28 @@ export async function blobErrorMessage(error: unknown): Promise<string> {
 }
 
 export const backupService = {
+  async listStored(): Promise<StoredBackup[]> {
+    const { data } = await axiosInstance.get<ApiResponse<StoredBackup[]>>(
+      "/api/backup/scheduled"
+    );
+    return data.data;
+  },
+
+  async runNow(): Promise<StoredBackup> {
+    const { data } = await axiosInstance.post<ApiResponse<StoredBackup>>(
+      "/api/backup/scheduled/run"
+    );
+    return data.data;
+  },
+
+  async downloadStored(filename: string): Promise<Blob> {
+    const response = await axiosInstance.get<Blob>(
+      `/api/backup/scheduled/${encodeURIComponent(filename)}`,
+      { responseType: "blob" }
+    );
+    return response.data;
+  },
+
   async downloadBackup(): Promise<BackupDownload> {
     const response = await axiosInstance.get<Blob>("/api/backup", {
       responseType: "blob",
