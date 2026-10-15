@@ -49,6 +49,7 @@ export interface ListingInterest {
   email: string;
   phone: string;
   message: string | null;
+  readAt: string | null;
   createdAt: string;
 }
 
@@ -130,6 +131,34 @@ export const wholesaleListingsService = {
         "/api/wholesale-listings/interests",
         { params }
       );
+    return data;
+  },
+
+  async getInterestById(id: string): Promise<ApiResponse<ListingInterest>> {
+    const { data } = await axiosInstance.get<ApiResponse<ListingInterest>>(
+      `/api/wholesale-listings/interests/${id}`
+    );
+    return data;
+  },
+
+  async getUnreadInterestsCount(): Promise<number> {
+    const { data } = await axiosInstance.get<ApiResponse<{ count: number }>>(
+      "/api/wholesale-listings/interests/unread-count"
+    );
+    return data.data.count;
+  },
+
+  async markInterestRead(id: string): Promise<ApiResponse<ListingInterest>> {
+    const { data } = await axiosInstance.patch<ApiResponse<ListingInterest>>(
+      `/api/wholesale-listings/interests/${id}/read`
+    );
+    return data;
+  },
+
+  async markAllInterestsRead(): Promise<ApiResponse<{ updated: number }>> {
+    const { data } = await axiosInstance.patch<ApiResponse<{ updated: number }>>(
+      "/api/wholesale-listings/interests/read-all"
+    );
     return data;
   },
 

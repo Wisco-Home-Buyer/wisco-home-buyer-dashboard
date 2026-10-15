@@ -32,6 +32,54 @@ export const useListingInterests = (params: QueryListingInterestsParams = {}) =>
   });
 };
 
+export const useListingInterestDetail = (id: string) => {
+  return useQuery({
+    queryKey: [WHOLESALE_LISTINGS_QUERY_KEY, "interest", id],
+    queryFn: () => wholesaleListingsService.getInterestById(id),
+    enabled: !!id,
+  });
+};
+
+/** Badge: number of "I'm interested" requests nobody has opened yet. */
+export const useUnreadInterestsCount = () => {
+  return useQuery({
+    queryKey: [WHOLESALE_LISTINGS_QUERY_KEY, "interests-unread"],
+    queryFn: () => wholesaleListingsService.getUnreadInterestsCount(),
+    refetchInterval: 60 * 1000,
+    staleTime: 30 * 1000,
+  });
+};
+
+export const useMarkInterestReadMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => wholesaleListingsService.markInterestRead(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [WHOLESALE_LISTINGS_QUERY_KEY],
+      });
+    },
+  });
+};
+
+export const useMarkAllInterestsReadMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => wholesaleListingsService.markAllInterestsRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [WHOLESALE_LISTINGS_QUERY_KEY],
+      });
+      toast.success("All requests marked as read");
+    },
+    onError: (err) => {
+      toast.error(errorMessage(err, "Failed to mark requests as read"));
+    },
+  });
+};
+
 export const useWholesaleListingDetail = (id: string) => {
   return useQuery({
     queryKey: [WHOLESALE_LISTINGS_QUERY_KEY, id],

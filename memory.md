@@ -31,3 +31,7 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Interested buyers (branch feat/listing-interests, 2026-10-16, uncommitted)
 - `/wholesale-listings/interests` lists public "I'm interested" requests (linked from the listings page). Needs the server `GET /api/wholesale-listings/interests` deployed first.
+
+## Detail pages and unread badge (branch feat/listing-detail-pages, 2026-10-16, uncommitted)
+- Routes: `/wholesale-listings/[id]` is now a read-only detail page (photos with popup, interested buyers for that listing); the edit form moved to `/wholesale-listings/[id]/edit`. `/wholesale-listings/interests/[id]` shows one request and marks it read. Unread count badge on the listings page button and sidebar (polls every 60s); 'Mark all as read' on the interests list.
+- Needs server endpoints from feat/interest-read-status deployed first (`/interests/unread-count`, `/interests/:id`, `/interests/:id/read`, `/interests/read-all`).

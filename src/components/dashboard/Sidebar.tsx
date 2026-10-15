@@ -16,6 +16,7 @@ import {
 import { Settings, X } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import { useNewLeadsCount } from "../../hooks/useLeadsQuery";
+import { useUnreadInterestsCount } from "../../hooks/useWholesaleListingsQuery";
 
 const LogOutIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
@@ -46,6 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { data: newLeadsCount = 0 } = useNewLeadsCount();
+  const { data: unreadInterests = 0 } = useUnreadInterestsCount();
 
   const navItems = [
     {
@@ -81,7 +83,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
       name: "Wholesale Listings",
       icon: FaTags,
       href: "/wholesale-listings",
-      badge: null,
+      badge:
+        unreadInterests > 0
+          ? unreadInterests > 99
+            ? "99+"
+            : String(unreadInterests)
+          : null,
     },
     {
       name: "Public Records",

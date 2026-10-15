@@ -6,6 +6,7 @@ import { Plus, RefreshCw, Search } from "lucide-react";
 import {
   useDeleteWholesaleListingMutation,
   useNotifyBuyersMutation,
+  useUnreadInterestsCount,
   useWholesaleListings,
 } from "../../hooks/useWholesaleListingsQuery";
 import {
@@ -60,6 +61,7 @@ export const WholesaleListingsTable: React.FC = () => {
     });
   const deleteMutation = useDeleteWholesaleListingMutation();
   const notifyMutation = useNotifyBuyersMutation();
+  const { data: unreadInterests = 0 } = useUnreadInterestsCount();
   const [pendingNotify, setPendingNotify] = useState<{
     id: string;
     title: string;
@@ -109,9 +111,17 @@ export const WholesaleListingsTable: React.FC = () => {
           </button>
           <Link
             href="/wholesale-listings/interests"
-            className="px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-all whitespace-nowrap"
+            className="relative flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl transition-all whitespace-nowrap"
           >
             Interested buyers
+            {unreadInterests > 0 && (
+              <span
+                aria-label={`${unreadInterests} unread`}
+                className="flex items-center justify-center min-w-5 h-5 px-1.5 text-[10px] font-extrabold text-white bg-rose-600 rounded-full"
+              >
+                {unreadInterests > 99 ? "99+" : unreadInterests}
+              </span>
+            )}
           </Link>
           <Link
             href="/wholesale-listings/new"
@@ -212,8 +222,13 @@ export const WholesaleListingsTable: React.FC = () => {
                           )}
                         </div>
                         <div className="min-w-0">
-                          <h4 className="font-bold text-slate-900 dark:text-white truncate">
-                            {listing.title}
+                          <h4 className="font-bold truncate">
+                            <Link
+                              href={`/wholesale-listings/${listing.id}`}
+                              className="text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 hover:underline"
+                            >
+                              {listing.title}
+                            </Link>
                           </h4>
                           <p className="text-[11px] font-medium text-slate-400 mt-0.5 truncate">
                             {listing.street}, {listing.city}, {listing.state}{" "}
@@ -238,7 +253,7 @@ export const WholesaleListingsTable: React.FC = () => {
                     <td className="py-4 px-3">
                       <div className="flex items-center justify-end gap-3">
                         <Link
-                          href={`/wholesale-listings/${listing.id}`}
+                          href={`/wholesale-listings/${listing.id}/edit`}
                           className="font-bold text-blue-600 dark:text-blue-400 hover:underline"
                         >
                           Edit
