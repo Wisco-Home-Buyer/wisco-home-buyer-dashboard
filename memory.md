@@ -44,3 +44,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Automation settings tab (branch feat/app-settings-ui, stacked on feat/data-cleanup-ui, 2026-10-16, uncommitted)
 - Settings > Automation (SUPER_ADMIN): toggle/edit the runtime settings, 'Reset to default'. Needs server `/api/app-settings` deployed.
+
+## Cleanup card: Everything option (branch feat/cleanup-all-data-ui, stacked on feat/app-settings-ui, 2026-10-16)
+- Third option 'Everything' in Settings > Database > Clear imported data; requires typing `DELETE EVERYTHING` plus the backup tick.

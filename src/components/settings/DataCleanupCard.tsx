@@ -6,7 +6,10 @@ import {
   useDataCleanupPreview,
   useRunDataCleanupMutation,
 } from "../../hooks/useDataCleanup";
-import { CLEANUP_CONFIRMATION } from "../../services/dataCleanup.service";
+import {
+  CLEANUP_ALL_CONFIRMATION,
+  CLEANUP_CONFIRMATION,
+} from "../../services/dataCleanup.service";
 
 const optionClass =
   "flex items-start gap-3 p-4 rounded-2xl border border-slate-200 dark:border-slate-700 cursor-pointer";
@@ -18,23 +21,28 @@ export const DataCleanupCard: React.FC = () => {
 
   const [autoLeads, setAutoLeads] = useState(false);
   const [publicRecords, setPublicRecords] = useState(false);
+  const [allBusinessData, setAllBusinessData] = useState(false);
   const [hasBackup, setHasBackup] = useState(false);
   const [confirmText, setConfirmText] = useState("");
 
+  const requiredPhrase = allBusinessData
+    ? CLEANUP_ALL_CONFIRMATION
+    : CLEANUP_CONFIRMATION;
   const canRun =
-    (autoLeads || publicRecords) &&
+    (autoLeads || publicRecords || allBusinessData) &&
     hasBackup &&
-    confirmText === CLEANUP_CONFIRMATION &&
+    confirmText === requiredPhrase &&
     !cleanup.isPending;
 
   const handleRun = () => {
     if (!canRun) return;
     cleanup.mutate(
-      { autoLeads, publicRecords },
+      { autoLeads, publicRecords, allBusinessData },
       {
         onSuccess: () => {
           setAutoLeads(false);
           setPublicRecords(false);
+          setAllBusinessData(false);
           setHasBackup(false);
           setConfirmText("");
           void refetch();
@@ -79,9 +87,9 @@ export const DataCleanupCard: React.FC = () => {
           <label className={optionClass}>
             <input
               type="checkbox"
-              checked={autoLeads}
+              checked={autoLeads || allBusinessData}
               onChange={(e) => setAutoLeads(e.target.checked)}
-              disabled={cleanup.isPending}
+              disabled={cleanup.isPending || allBusinessData}
               className="mt-0.5"
             />
             <span>
@@ -99,9 +107,9 @@ export const DataCleanupCard: React.FC = () => {
           <label className={optionClass}>
             <input
               type="checkbox"
-              checked={publicRecords}
+              checked={publicRecords || allBusinessData}
               onChange={(e) => setPublicRecords(e.target.checked)}
-              disabled={cleanup.isPending}
+              disabled={cleanup.isPending || allBusinessData}
               className="mt-0.5"
             />
             <span>
@@ -113,6 +121,35 @@ export const DataCleanupCard: React.FC = () => {
               <span className="block text-[11px] font-normal text-slate-500 dark:text-slate-400 mt-0.5">
                 Also removes the owner and tax details shown on leads that
                 people submitted themselves.
+              </span>
+            </span>
+          </label>
+
+          <label
+            className={`${optionClass} border-rose-300 dark:border-rose-800 bg-rose-50/60 dark:bg-rose-950/20`}
+          >
+            <input
+              type="checkbox"
+              checked={allBusinessData}
+              onChange={(e) => {
+                setAllBusinessData(e.target.checked);
+                setConfirmText("");
+              }}
+              disabled={cleanup.isPending}
+              className="mt-0.5"
+            />
+            <span>
+              <span className="block text-xs font-bold text-rose-700 dark:text-rose-400">
+                Everything: start completely fresh ({counts.leads} leads,{" "}
+                {counts.buyerLeads} buyers, {counts.wholesaleListings} listings,{" "}
+                {counts.listingInterests} interest requests,{" "}
+                {counts.notifications} notifications)
+              </span>
+              <span className="block text-[11px] font-normal text-slate-600 dark:text-slate-400 mt-0.5">
+                Deletes every lead including ones people submitted through the
+                website, all saved public records, the buyers list, wholesale
+                listings and notifications. Team accounts and settings are
+                kept. Uploaded photo files stay on the server.
               </span>
             </span>
           </label>
@@ -134,7 +171,7 @@ export const DataCleanupCard: React.FC = () => {
           htmlFor="cleanup-confirm"
           className="block mb-1 text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider"
         >
-          Type {CLEANUP_CONFIRMATION} to confirm
+          Type {requiredPhrase} to confirm
         </label>
         <input
           id="cleanup-confirm"
@@ -153,7 +190,11 @@ export const DataCleanupCard: React.FC = () => {
         className="inline-flex items-center gap-2 px-4 py-2.5 text-xs font-bold text-white bg-rose-600 hover:bg-rose-700 rounded-xl cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
       >
         {cleanup.isPending && <Loader2 className="w-4 h-4 animate-spin" />}
-        {cleanup.isPending ? "Deleting..." : "Delete selected data"}
+        {cleanup.isPending
+          ? "Deleting..."
+          : allBusinessData
+            ? "Delete everything"
+            : "Delete selected data"}
       </button>
     </div>
   );

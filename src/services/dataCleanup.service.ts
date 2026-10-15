@@ -1,6 +1,7 @@
 import { axiosInstance } from "../lib/axios";
 
 export const CLEANUP_CONFIRMATION = "DELETE";
+export const CLEANUP_ALL_CONFIRMATION = "DELETE EVERYTHING";
 
 export interface DataCleanupCounts {
   autoLeads: number;
@@ -8,11 +9,17 @@ export interface DataCleanupCounts {
   parcelTaxYears: number;
   attomEnrichments: number;
   comparableProperties: number;
+  leads: number;
+  buyerLeads: number;
+  wholesaleListings: number;
+  listingInterests: number;
+  notifications: number;
 }
 
 export interface RunDataCleanupPayload {
   autoLeads: boolean;
   publicRecords: boolean;
+  allBusinessData: boolean;
 }
 
 interface ApiResponse<T> {
