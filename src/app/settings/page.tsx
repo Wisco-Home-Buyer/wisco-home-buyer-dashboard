@@ -5,10 +5,15 @@ import { Sidebar } from "@/components/dashboard/Sidebar";
 import { Header } from "@/components/dashboard/Header";
 import { CompanyProfileForm } from "@/components/settings/CompanyProfileForm";
 import { UsersRolesTab } from "@/components/settings/UsersRolesTab";
+import { DatabaseBackupTab } from "@/components/settings/DatabaseBackupTab";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function SettingsPage() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"profile" | "users">("profile");
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState<"profile" | "users" | "database">(
+    "profile"
+  );
 
   return (
     <div className="flex min-h-screen bg-[#f4f6f8] dark:bg-[#0b1329]">
@@ -68,14 +73,30 @@ export default function SettingsPage() {
               >
                 Users & Roles
               </button>
+
+              {user?.role === "SUPER_ADMIN" && (
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("database")}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-semibold transition-all ${
+                    activeTab === "database"
+                      ? "bg-[#0e1726] text-white shadow-xs dark:bg-blue-600"
+                      : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  Database
+                </button>
+              )}
             </div>
 
             {/* Right Form Card (Comfortable Max Width 820px) */}
             <div className="w-full max-w-[820px]">
               {activeTab === "profile" ? (
                 <CompanyProfileForm />
-              ) : (
+              ) : activeTab === "users" ? (
                 <UsersRolesTab />
+              ) : (
+                <DatabaseBackupTab />
               )}
             </div>
           </div>

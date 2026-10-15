@@ -35,3 +35,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 ## Detail pages and unread badge (branch feat/listing-detail-pages, 2026-10-16, uncommitted)
 - Routes: `/wholesale-listings/[id]` is now a read-only detail page (photos with popup, interested buyers for that listing); the edit form moved to `/wholesale-listings/[id]/edit`. `/wholesale-listings/interests/[id]` shows one request and marks it read. Unread count badge on the listings page button and sidebar (polls every 60s); 'Mark all as read' on the interests list.
 - Needs server endpoints from feat/interest-read-status deployed first (`/interests/unread-count`, `/interests/:id`, `/interests/:id/read`, `/interests/read-all`).
+
+## Database backup/restore UI (branch feat/database-backup-ui, 2026-10-16, uncommitted)
+- Settings > Database tab (SUPER_ADMIN only): download backup (`GET /api/backup`) and restore (`POST /api/backup/restore`, must type RESTORE; signs you out after). Server endpoints already existed; backup downloads into browser memory (fine for current size).
