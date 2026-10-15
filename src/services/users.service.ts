@@ -1,7 +1,7 @@
 import { axiosInstance } from "../lib/axios";
 
 export type ApiRole = "SUPER_ADMIN" | "ADMIN" | "ANALYST" | "VIEWER";
-export type ApiUserStatus = "ACTIVE" | "INVITED" | "DISABLED";
+export type ApiUserStatus = "ACTIVE" | "INVITED" | "SUSPENDED";
 
 export interface TeamUser {
   id: string;
@@ -54,6 +54,12 @@ export const usersService = {
   updateRole(id: string, role: ApiRole) {
     return unwrap<TeamUser>(
       axiosInstance.patch(`/api/users/${id}/role`, { role }),
+    );
+  },
+
+  updateStatus(id: string, status: "ACTIVE" | "SUSPENDED") {
+    return unwrap<TeamUser>(
+      axiosInstance.patch(`/api/users/${id}/status`, { status }),
     );
   },
 

@@ -5,7 +5,9 @@ import { UserPlus, ChevronDown, X, Loader2 } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
 import {
   useInviteUserMutation,
+  useRemoveUserMutation,
   useUpdateUserRoleMutation,
+  useUpdateUserStatusMutation,
   useUsersList,
 } from "../../hooks/useUsersQuery";
 import {
@@ -28,6 +30,13 @@ export const UsersRolesTab: React.FC = () => {
   );
   const inviteMutation = useInviteUserMutation();
   const updateRoleMutation = useUpdateUserRoleMutation();
+  const updateStatusMutation = useUpdateUserStatusMutation();
+  const removeMutation = useRemoveUserMutation();
+  const [pendingAction, setPendingAction] = useState<{
+    kind: "disable" | "enable" | "remove";
+    id: string;
+    name: string;
+  } | null>(null);
 
   const [isInviteOpen, setIsInviteOpen] = useState(false);
   const [inviteEmail, setInviteEmail] = useState("");
@@ -42,6 +51,23 @@ export const UsersRolesTab: React.FC = () => {
     if (!canManage) return;
     updateRoleMutation.mutate({ id, role: newRole });
     setActiveOpenDropdown(null);
+  };
+
+  const confirmPendingAction = () => {
+    if (!pendingAction) return;
+    const done = { onSettled: () => setPendingAction(null) };
+
+    if (pendingAction.kind === "remove") {
+      removeMutation.mutate(pendingAction.id, done);
+      return;
+    }
+    updateStatusMutation.mutate(
+      {
+        id: pendingAction.id,
+        status: pendingAction.kind === "disable" ? "SUSPENDED" : "ACTIVE",
+      },
+      done,
+    );
   };
 
   const handleSendInvite = (e: React.FormEvent) => {
@@ -228,6 +254,8 @@ export const UsersRolesTab: React.FC = () => {
             const isSuperAdmin = member.role === "SUPER_ADMIN";
             const canEditRole = canManage && !isSelf && !isSuperAdmin;
             const label = statusLabel(member.status);
+            const canManageMember =
+              canManage && !isSelf && (user?.role === "SUPER_ADMIN" || !isSuperAdmin);
 
             return (
               <div
@@ -321,10 +349,104 @@ export const UsersRolesTab: React.FC = () => {
                     </span>
                   )}
                 </div>
+
+                {canManageMember && (
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {member.status !== "INVITED" && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPendingAction({
+                            kind:
+                              member.status === "SUSPENDED"
+                                ? "enable"
+                                : "disable",
+                            id: member.id,
+                            name: member.name,
+                          })
+                        }
+                        className="px-2.5 py-1.5 text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl cursor-pointer whitespace-nowrap"
+                      >
+                        {member.status === "SUSPENDED" ? "Enable" : "Disable"}
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setPendingAction({
+                          kind: "remove",
+                          id: member.id,
+                          name: member.name,
+                        })
+                      }
+                      className="px-2.5 py-1.5 text-[11px] font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-xl cursor-pointer"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
               </div>
             );
           })}
       </div>
+
+      {pendingAction && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Confirm user action"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4"
+        >
+          <div className="w-full max-w-sm bg-white dark:bg-slate-900 rounded-[22px] p-6 space-y-4 shadow-xl">
+            <h3 className="text-sm font-bold text-[#0f2347] dark:text-white">
+              {pendingAction.kind === "remove"
+                ? "Remove this team member?"
+                : pendingAction.kind === "disable"
+                  ? "Disable this account?"
+                  : "Enable this account?"}
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {pendingAction.kind === "remove"
+                ? `${pendingAction.name} will be deleted permanently and lose access. This cannot be undone.`
+                : pendingAction.kind === "disable"
+                  ? `${pendingAction.name} will be signed out and won't be able to sign in until you enable the account again.`
+                  : `${pendingAction.name} will be able to sign in again.`}
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setPendingAction(null)}
+                disabled={
+                  removeMutation.isPending || updateStatusMutation.isPending
+                }
+                className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl cursor-pointer disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmPendingAction}
+                disabled={
+                  removeMutation.isPending || updateStatusMutation.isPending
+                }
+                className={`px-4 py-2 text-xs font-bold text-white rounded-xl cursor-pointer disabled:opacity-50 ${
+                  pendingAction.kind === "remove"
+                    ? "bg-rose-600 hover:bg-rose-700"
+                    : "bg-[#0f2347] hover:bg-[#1a386d] dark:bg-blue-600"
+                }`}
+              >
+                {removeMutation.isPending || updateStatusMutation.isPending
+                  ? "Working..."
+                  : pendingAction.kind === "remove"
+                    ? "Remove"
+                    : pendingAction.kind === "disable"
+                      ? "Disable"
+                      : "Enable"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
