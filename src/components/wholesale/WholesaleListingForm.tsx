@@ -277,6 +277,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
             >
               <option value="PRIVATE">Private (Buyers List)</option>
               <option value="PUBLIC">Public (Wholesale Listings)</option>
+              <option value="BOTH">Both (Wholesale Listings + Buyers List)</option>
             </select>
           </div>
         </div>

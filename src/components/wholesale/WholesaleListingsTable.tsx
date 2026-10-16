@@ -32,6 +32,7 @@ const STATUS_STYLES: Record<ListingStatus, string> = {
 const VISIBILITY_LABELS: Record<ListingVisibility, string> = {
   PUBLIC: "Public",
   PRIVATE: "Private",
+  BOTH: "Both",
 };
 
 const formatPrice = (price: number) =>
@@ -160,6 +161,7 @@ export const WholesaleListingsTable: React.FC = () => {
             <option value="ALL">All visibility</option>
             <option value="PUBLIC">Public</option>
             <option value="PRIVATE">Private</option>
+            <option value="BOTH">Both</option>
           </select>
         </div>
 

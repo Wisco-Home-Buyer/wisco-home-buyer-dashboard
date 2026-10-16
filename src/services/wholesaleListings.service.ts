@@ -1,7 +1,7 @@
 import { axiosInstance } from "../lib/axios";
 
 export type ListingStatus = "AVAILABLE" | "UNDER_CONTRACT" | "SOLD";
-export type ListingVisibility = "PUBLIC" | "PRIVATE";
+export type ListingVisibility = "PUBLIC" | "PRIVATE" | "BOTH";
 
 export interface WholesaleListing {
   id: string;
