@@ -64,3 +64,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Unused files card (branch feat/unused-files-ui, 2026-10-16)
 - Settings > Database shows 'Unused uploaded files' (count and size from `GET /api/uploads/unused`) with 'Delete unused files' (`POST /api/uploads/unused/clean`). Needs the server endpoints deployed first.
+
+## Visibility Both (branch feat/visibility-both, 2026-10-17)
+- Listing form/filter/detail know `BOTH` (label 'Both (Wholesale Listings + Buyers List)'). Needs server `ListingVisibility.BOTH` deployed first (the migration adds the enum value).

@@ -18,6 +18,20 @@ const STATUS_LABELS = {
   SOLD: "Sold",
 } as const;
 
+const VISIBILITY_LABELS = {
+  PUBLIC: "Public",
+  PRIVATE: "Private",
+  BOTH: "Both",
+} as const;
+
+const VISIBILITY_STYLES = {
+  PUBLIC:
+    "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300",
+  PRIVATE:
+    "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300",
+  BOTH: "bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300",
+} as const;
+
 const formatPrice = (price: number) =>
   new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -110,13 +124,9 @@ export const WholesaleListingDetail: React.FC<{ listingId: string }> = ({
             {STATUS_LABELS[listing.status]}
           </span>
           <span
-            className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-              listing.visibility === "PUBLIC"
-                ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300"
-                : "bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300"
-            }`}
+            className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${VISIBILITY_STYLES[listing.visibility]}`}
           >
-            {listing.visibility === "PUBLIC" ? "Public" : "Private"}
+            {VISIBILITY_LABELS[listing.visibility]}
           </span>
         </div>
 
