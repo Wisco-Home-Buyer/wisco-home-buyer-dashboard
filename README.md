@@ -18,6 +18,9 @@ Internal admin and CRM dashboard for the Wisco Home Buyer team. It talks to
 - **Wholesale Listings**: create/edit listings (photos with a large-photo popup,
   video link, Public/Private, US state and ZIP autofill), a read-only detail page
   per listing, "Notify buyers" email, and **Interested buyers** with an unread badge
+- **Activity Log** (Super Admin only; hidden from the sidebar for everyone else):
+  who did what and when, with search, result and date filters. Needs the server
+  `GET /api/activity-logs` deployed first
 - **Settings** (role-based):
   - Profile and **Users & Roles**: invite, change role, disable/enable, remove
   - **Automation** (Super Admin): nightly public records pull on/off, interest

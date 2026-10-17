@@ -12,6 +12,7 @@ import {
   FaTags,
   FaLayerGroup,
   FaChartLine,
+  FaHistory,
 } from "react-icons/fa";
 import { Settings, X } from "lucide-react";
 import { useAuth } from "../../hooks/useAuth";
@@ -102,6 +103,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
       href: "/analytics",
       badge: null,
     },
+    ...(user?.role === "SUPER_ADMIN"
+      ? [
+          {
+            name: "Activity Log",
+            icon: FaHistory,
+            href: "/activity-logs",
+            badge: null as string | null,
+          },
+        ]
+      : []),
   ];
 
   return (
