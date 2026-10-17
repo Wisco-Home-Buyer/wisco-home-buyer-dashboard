@@ -67,3 +67,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Visibility Both (branch feat/visibility-both, 2026-10-17)
 - Listing form/filter/detail know `BOTH` (label 'Both (Wholesale Listings + Buyers List)'). Needs server `ListingVisibility.BOTH` deployed first (the migration adds the enum value).
+
+## Activity log (branch feat/activity-logs, 2026-10-17)
+- `/activity-logs` page (`ActivityLogsTable`, `useActivityLogs`, `activityLogs.service`). Sidebar item and page content only for SUPER_ADMIN; server enforces the same. Needs server PR #25 deployed first.
