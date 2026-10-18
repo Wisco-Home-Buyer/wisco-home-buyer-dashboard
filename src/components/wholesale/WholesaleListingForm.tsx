@@ -22,6 +22,7 @@ import {
 import { isUploadedVideo } from "../../lib/video";
 
 const MAX_IMAGES = 20;
+const UPLOAD_BATCH_SIZE = 5;
 
 const inputClass =
   "w-full px-3.5 py-2.5 text-xs font-medium bg-slate-50/70 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -124,16 +125,25 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
     }
 
     setIsUploading(true);
+    let uploaded = 0;
     try {
-      const urls = await uploadListingImages(files);
-      setImages((current) => [...current, ...urls]);
+      for (let i = 0; i < files.length; i += UPLOAD_BATCH_SIZE) {
+        const batch = files.slice(i, i + UPLOAD_BATCH_SIZE);
+        const urls = await uploadListingImages(batch);
+        setImages((current) => [...current, ...urls]);
+        uploaded += urls.length;
+      }
     } catch (err) {
       const e = err as {
         response?: { data?: { message?: string } };
         message?: string;
       };
+      const reason =
+        e?.response?.data?.message || e?.message || "Failed to upload photos";
       toast.error(
-        e?.response?.data?.message || e?.message || "Failed to upload photos"
+        uploaded > 0
+          ? `${uploaded} of ${files.length} photos were added, the rest failed (${reason}). Please add the missing ones again.`
+          : reason
       );
     } finally {
       setIsUploading(false);
