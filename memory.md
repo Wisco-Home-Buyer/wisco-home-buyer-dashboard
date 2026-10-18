@@ -70,3 +70,6 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Activity log (branch feat/activity-logs, 2026-10-17)
 - `/activity-logs` page (`ActivityLogsTable`, `useActivityLogs`, `activityLogs.service`). Sidebar item and page content only for SUPER_ADMIN; server enforces the same. Needs server PR #25 deployed first.
+
+## Photo upload batches (branch fix/listing-photo-batches, 2026-10-19)
+- Listing form uploads photos 5 at a time (server accepts max 10 files per request; the form allows 20). A failed batch now reports how many photos were added.
