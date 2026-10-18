@@ -219,6 +219,8 @@ export const WholesaleListingsTable: React.FC = () => {
                             <img
                               src={resolveAssetUrl(listing.images[0]) ?? ""}
                               alt=""
+                              loading="lazy"
+                              decoding="async"
                               className="w-full h-full object-cover"
                             />
                           )}

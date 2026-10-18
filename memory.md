@@ -75,3 +75,4 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 - Listing form uploads photos 5 at a time (server accepts max 10 files per request; the form allows 20). A failed batch now reports how many photos were added.
 - Photo picker accepts any image type (JPG/PNG/HEIC/WEBP), checks 100 MB per photo, error toasts stay 10 s (branch fix/listing-photo-feedback, 2026-10-19). Needs server PR "accept more photo formats" deployed.
 - Activity log rows show "Why it failed" (server `errorMessage`, PR feat/activity-log-reason, 2026-10-19). Needs server deployed first.
+- Listing photo thumbnails use lazy loading (branch fix/lazy-photo-thumbnails, 2026-10-19).
