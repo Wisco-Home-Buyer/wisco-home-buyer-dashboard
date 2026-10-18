@@ -185,6 +185,11 @@ export const ActivityLogsTable: React.FC = () => {
                           {log.method} {log.route}
                           {log.resourceId ? ` · ${log.resourceId}` : ""}
                         </div>
+                        {!log.success && log.errorMessage && (
+                          <div className="text-red-600 dark:text-red-400 font-semibold mt-0.5">
+                            Why it failed: {log.errorMessage}
+                          </div>
+                        )}
                         {details && (
                           <div className="text-slate-500 dark:text-slate-400 mt-0.5">
                             {details}
