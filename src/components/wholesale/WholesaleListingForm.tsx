@@ -528,6 +528,8 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
                   <img
                     src={resolveAssetUrl(url) ?? ""}
                     alt={`Listing photo ${index + 1}`}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
                 </button>
