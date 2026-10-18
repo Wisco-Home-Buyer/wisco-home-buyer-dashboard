@@ -22,7 +22,9 @@ import {
 import { isUploadedVideo } from "../../lib/video";
 
 const MAX_IMAGES = 20;
-const UPLOAD_BATCH_SIZE = 5;
+const UPLOAD_BATCH_SIZE = 3;
+const PHOTO_MAX_MB = 100;
+const ERROR_TOAST_MS = 10000;
 
 const inputClass =
   "w-full px-3.5 py-2.5 text-xs font-medium bg-slate-50/70 dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/80 rounded-2xl text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500";
@@ -124,6 +126,15 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
       return;
     }
 
+    const tooBig = files.find((file) => file.size > PHOTO_MAX_MB * 1024 * 1024);
+    if (tooBig) {
+      toast.error(
+        `"${tooBig.name}" is larger than ${PHOTO_MAX_MB} MB. Please choose a smaller photo.`,
+        { duration: ERROR_TOAST_MS }
+      );
+      return;
+    }
+
     setIsUploading(true);
     let uploaded = 0;
     try {
@@ -143,7 +154,8 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
       toast.error(
         uploaded > 0
           ? `${uploaded} of ${files.length} photos were added, the rest failed (${reason}). Please add the missing ones again.`
-          : reason
+          : reason,
+        { duration: ERROR_TOAST_MS }
       );
     } finally {
       setIsUploading(false);
@@ -490,7 +502,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
             <span>{isUploading ? "Uploading..." : "Add photos"}</span>
             <input
               type="file"
-              accept="image/jpeg,image/png,image/heic"
+              accept="image/*,.heic,.heif"
               multiple
               disabled={isUploading}
               onChange={handleFiles}
@@ -537,7 +549,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
           </div>
         ) : (
           <p className="text-xs font-medium text-slate-400">
-            No photos yet. JPG, PNG or HEIC. The first photo is the cover.
+            No photos yet. JPG, PNG, HEIC, WEBP and more, up to 100 MB each. The first photo is the cover.
           </p>
         )}
       </div>
