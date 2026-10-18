@@ -73,3 +73,4 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 
 ## Photo upload batches (branch fix/listing-photo-batches, 2026-10-19)
 - Listing form uploads photos 5 at a time (server accepts max 10 files per request; the form allows 20). A failed batch now reports how many photos were added.
+- Photo picker accepts any image type (JPG/PNG/HEIC/WEBP), checks 25 MB per photo, error toasts stay 10 s (branch fix/listing-photo-feedback, 2026-10-19). Needs server PR "accept more photo formats" deployed.
