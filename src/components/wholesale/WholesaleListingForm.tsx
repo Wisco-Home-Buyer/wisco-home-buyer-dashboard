@@ -22,8 +22,8 @@ import {
 import { isUploadedVideo } from "../../lib/video";
 
 const MAX_IMAGES = 20;
-const UPLOAD_BATCH_SIZE = 5;
-const PHOTO_MAX_MB = 25;
+const UPLOAD_BATCH_SIZE = 3;
+const PHOTO_MAX_MB = 100;
 const ERROR_TOAST_MS = 10000;
 
 const inputClass =
@@ -549,7 +549,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
           </div>
         ) : (
           <p className="text-xs font-medium text-slate-400">
-            No photos yet. JPG, PNG, HEIC or WEBP, up to 25 MB each. The first photo is the cover.
+            No photos yet. JPG, PNG, HEIC, WEBP and more, up to 100 MB each. The first photo is the cover.
           </p>
         )}
       </div>
