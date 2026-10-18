@@ -13,6 +13,7 @@ export interface ActivityLog {
   route: string;
   resourceId: string | null;
   success: boolean;
+  errorMessage: string | null;
   statusCode: number;
   ip: string | null;
   userAgent: string | null;
