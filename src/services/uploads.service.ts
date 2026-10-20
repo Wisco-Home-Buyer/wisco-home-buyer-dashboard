@@ -11,6 +11,24 @@ export function resolveAssetUrl(url: string | null | undefined): string | null {
   return `${API_URL}${url.startsWith("/") ? "" : "/"}${url}`;
 }
 
+const OWN_PHOTO =
+  /^\/(?:uploads\/)?([0-9a-f-]{36}\.(?:jpe?g|png|webp|heic|heif|gif|tiff?|avif|bmp))$/i;
+
+/**
+ * A smaller copy of an uploaded photo from the API's resize route, so lists
+ * and grids do not download 6-12 MB originals. Anything else (blob previews,
+ * links to other hosts) is returned unchanged.
+ */
+export function photoUrl(
+  url: string | null | undefined,
+  width: 400 | 800 | 1200 | 1600,
+): string | null {
+  const absolute = resolveAssetUrl(url);
+  if (!absolute || !absolute.startsWith(`${API_URL}/`)) return absolute;
+  const match = absolute.slice(API_URL.length).split("?")[0].match(OWN_PHOTO);
+  return match ? `${API_URL}/api/images/${match[1]}?w=${width}&fmt=webp` : absolute;
+}
+
 export async function uploadAvatar(file: File): Promise<string> {
   const body = new FormData();
   body.append("file", file);

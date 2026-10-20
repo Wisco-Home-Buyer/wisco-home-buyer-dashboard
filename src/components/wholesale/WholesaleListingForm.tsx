@@ -13,6 +13,7 @@ import { ImageLightbox } from "./ImageLightbox";
 import { US_STATES } from "../../lib/us-states";
 import { lookupZip } from "../../services/zip.service";
 import {
+  photoUrl,
   resolveAssetUrl,
   uploadListingImages,
   uploadListingVideo,
@@ -526,7 +527,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={resolveAssetUrl(url) ?? ""}
+                    src={photoUrl(url, 400) ?? ""}
                     alt={`Listing photo ${index + 1}`}
                     loading="lazy"
                     decoding="async"
@@ -567,7 +568,7 @@ export const WholesaleListingForm: React.FC<WholesaleListingFormProps> = ({
       </div>
 
       <ImageLightbox
-        images={images.map((url) => resolveAssetUrl(url) ?? "")}
+        images={images.map((url) => photoUrl(url, 1600) ?? "")}
         index={lightboxIndex}
         onIndexChange={setLightboxIndex}
       />

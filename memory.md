@@ -76,3 +76,4 @@ Feature complete for current scope; no TODO/mock leftovers found in `src`.
 - Photo picker accepts any image type (JPG/PNG/HEIC/WEBP), checks 100 MB per photo, error toasts stay 10 s (branch fix/listing-photo-feedback, 2026-10-19). Needs server PR "accept more photo formats" deployed.
 - Activity log rows show "Why it failed" (server `errorMessage`, PR feat/activity-log-reason, 2026-10-19). Needs server deployed first.
 - Listing photo thumbnails use lazy loading (branch fix/lazy-photo-thumbnails, 2026-10-19).
+- Listing photos in the table, form grid and detail grid load resized copies via `photoUrl()` (`/api/images/<file>?w=400`, lightbox 1600), branch feat/dashboard-resized-photos, 2026-10-21. Needs the server image-variants PRs deployed.
