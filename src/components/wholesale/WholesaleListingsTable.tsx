@@ -13,7 +13,7 @@ import {
   ListingStatus,
   ListingVisibility,
 } from "../../services/wholesaleListings.service";
-import { resolveAssetUrl } from "../../services/uploads.service";
+import { photoUrl } from "../../services/uploads.service";
 
 const STATUS_LABELS: Record<ListingStatus, string> = {
   AVAILABLE: "Available",
@@ -217,7 +217,7 @@ export const WholesaleListingsTable: React.FC = () => {
                           {listing.images[0] && (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
-                              src={resolveAssetUrl(listing.images[0]) ?? ""}
+                              src={photoUrl(listing.images[0], 400) ?? ""}
                               alt=""
                               loading="lazy"
                               decoding="async"

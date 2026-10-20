@@ -8,7 +8,7 @@ import {
   useListingInterests,
   useWholesaleListingDetail,
 } from "../../hooks/useWholesaleListingsQuery";
-import { resolveAssetUrl } from "../../services/uploads.service";
+import { photoUrl, resolveAssetUrl } from "../../services/uploads.service";
 import { isUploadedVideo } from "../../lib/video";
 import { ImageLightbox } from "./ImageLightbox";
 
@@ -53,7 +53,7 @@ export const WholesaleListingDetail: React.FC<{ listingId: string }> = ({
   const listing = data?.data;
   const interests = interestsData?.data ?? [];
   const interestTotal = interestsData?.pagination?.total ?? 0;
-  const images = (listing?.images ?? []).map((url) => resolveAssetUrl(url) ?? "");
+  const images = listing?.images ?? [];
 
   if (isLoading) {
     return (
@@ -207,8 +207,9 @@ export const WholesaleListingDetail: React.FC<{ listingId: string }> = ({
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={url}
+                  src={photoUrl(url, 400) ?? ""}
                   alt={`Listing photo ${index + 1}`}
+                  loading="lazy"
                   className="w-full h-full object-cover"
                 />
               </button>
@@ -264,7 +265,7 @@ export const WholesaleListingDetail: React.FC<{ listingId: string }> = ({
       </div>
 
       <ImageLightbox
-        images={images}
+        images={images.map((url) => photoUrl(url, 1600) ?? "")}
         index={lightboxIndex}
         onIndexChange={setLightboxIndex}
       />
